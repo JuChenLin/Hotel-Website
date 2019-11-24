@@ -1,0 +1,62 @@
+<% include partials/header %>
+
+<div>
+    <nav class="navbar navbar-expand-lg navbar-light bg-light">
+        <div class="collapse navbar-collapse">
+        <% if (username) { %>
+            <p>Hello, <span> <%= username %> </span> </p>
+            <form class="form-inline" method="GET" action="/logout">
+                <button class="btn btn-outline-danger"type="submit">Logout</button>
+            </form>
+
+        <% } else { %>
+            <form class="form-inline" method="GET" action="/register">
+                <button class="btn btn-outline-primary"type="submit">Sigup</button>
+            </form>
+            <form class="form-inline" method="GET" action="/login">
+                <button class="btn btn-outline-success" type="submit">Login</button>
+            </form>
+        <% } %>
+       </div>
+    </nav>
+</div>
+
+<div class="jumbotron">
+  <h1 class="display-4"> Welcome to <%= title %></h1>
+  <p>Here is the list of most popular videos</p>
+  <a class="btn btn-info" href="/videos/new" role="button">Add a new video</a>
+  
+</div>
+
+<div class="container">
+    <form action="/videos" method="GET">
+        <div class="input-group">
+            <input type="text" id="title" name="title" class="form-control">
+            <div class="input-group-append">
+            <select class="custom-select" id="genre" name="genre">
+                <option selected value="">Genre</option>
+                <% genres.forEach(function(genre){ %>
+                    <option value="<%= genre %>"> <%= genre %></option>
+	            <% }); %>
+            </select>
+            <button type="submit" class="btn btn-secondary">Search</button>
+            </div>
+        </div>
+    </form>
+
+    <br>	
+
+	<div class="row">
+
+	<% videos.forEach(function(video){ %>
+		<div class="sm-col-3">
+			<img src="images/<%= video.image %>" style="width:200px; height:200px;" class="img-thumbnail"/> 
+			<div class="caption"> <a href="videos/<%= video._id %>"><%= video.title %></a></div>
+		</div>
+	<% }); %>
+
+	</div>
+</div>
+
+
+<% include partials/footer %>
