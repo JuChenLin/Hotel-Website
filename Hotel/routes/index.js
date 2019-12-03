@@ -245,5 +245,10 @@ router.get('/contact', function(req, res){
     res.render('contact', { username : username });
 });
 
+router.get('/new', function(req, res) {
+    res.render('newroom', { });
+    //res.redirect('/');
+});
+
 
 module.exports = router;
