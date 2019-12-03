@@ -239,6 +239,13 @@ router.get('/rooms', function(req, res){
     res.render('rooms', { username : username, userrole : userrole });
 });
 
+router.get('/room', function(req, res) {
+    var username = false;
+    if (req.user) username = req.user.username;
+    console.log(username);
+    res.render('roomDetail', { username : username });
+});
+
 router.get('/about', function(req, res){
     var username = false;
     if (req.user) username = req.user.username;
@@ -294,7 +301,12 @@ router.get('/addrooms', function(req, res){
 });
 
 router.get('/new', function(req, res) {
-    res.render('newroom', { });
+    res.render('addRoom', { });
+    //res.redirect('/');
+});
+
+router.get('/edit', function(req, res) {
+    res.render('edit', { });
     //res.redirect('/');
 });
 

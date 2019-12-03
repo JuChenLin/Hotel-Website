@@ -1,0 +1,10 @@
+input {
+    padding:10px 10px;
+    border:1px solid #d5d9da;
+    border-radius:5px;
+    box-shadow: 0 0 5px #e8e9eb inset;
+    width:328px; /* 400 (#container) - 40 (li margins) -  10 (span paddings) - 20 (input paddings) - 2 (input borders) */
+    height: 30px;
+    font-size:1em;
+    outline:0; /* remove webkit focus styles */
+}
