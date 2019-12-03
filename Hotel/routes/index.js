@@ -15,6 +15,8 @@ var methodOverride = require('method-override');
 var passport = require('passport');
 var Customer = require('../models/customers');
 
+var formidable = require('formidable');
+
 router.use(bodyParser.urlencoded({ extended: false }));
 router.use(methodOverride(function(req, res){
   if (req.body && typeof req.body === 'object' && '_method' in req.body) {
@@ -280,7 +282,7 @@ router.post('/reservation', function(req, res){
 router.get('/addrooms', function(req, res){
     if(req.user) {
         if (req.user.role) {
-            add_new_room(req);
+            //add_new_room(req);
 
 
         } 
@@ -291,6 +293,44 @@ router.get('/addrooms', function(req, res){
     else {
         res.redirect('/rooms');
     }
+});
+
+router.post('/addrooms', function(req, res){
+    if(req.user) {
+        if (req.user.role) {
+            //add_new_room(req);
+
+
+        } 
+        else {
+            res.redirect('/rooms');
+        }
+    } 
+    else {
+        res.redirect('/rooms');
+    }
+});
+
+router.get('/upload', function(req, res) {
+   res.render('upload', {}); 
+});
+
+router.post('/upload', function(req, res){
+    new formidable.IncomingForm().parse(req)
+    .on('field', (name, field) => {
+      console.log('Field', name, field)
+    })
+    .on('fileBegin', (name, file) => {
+        file.path = process.cwd() + '/public/room_photo/' + file.name
+        console.log('Uploaded file', name, file)
+    })
+    .on('aborted', () => {
+      console.error('Request aborted by the user')
+    })
+    .on('error', (err) => {
+      console.error('Error', err)
+      throw err
+    })
 });
 
 module.exports = router;
@@ -311,6 +351,6 @@ function add_new_room(req){
         con.query("INSERT INTO room_type SET ?", {room_feature: req.body.room_feature, room_name: req.body.room_name}, function (err, result) {
             if (err) throw err;
         });
-        con.query("")
+        con.query("");
     }); 
 }
