@@ -23,7 +23,7 @@
 
     <!-- Theme Style -->
     <link rel="stylesheet" href="css/style.css">
-    <link rel="stylesheet" href="css/room.css">
+    <link rel="stylesheet" href="css/roomDetail.css">
   </head>
   <body>
     
@@ -33,7 +33,7 @@
       <div class="container">
         <div class="row site-hero-inner justify-content-center align-items-center">
           <div class="col-md-10 text-center" data-aos="fade">
-            <h1 class="heading mb-3">Room Name(?)</h1>
+            <h1 class="heading mb-3">Room Name</h1>
             <ul class="custom-breadcrumbs mb-4">
               <li><a href="index.html">Home</a></li>
               <li>&bullet;</li>
@@ -118,11 +118,13 @@
     <section class="section">
       <div class="container">
         
-        <h2> Room Name() </h2>
+          <h2> <%= details.room_name %> </h2>
         <div class="row">
+        <% for(var i=0; i < photos.length; i++) { %>
           <div>
-             <img src="images/apartment-bed-bedroom-chair-271618.jpg" alt="Free website template" class="img-fluid">
+              <img src="<%= photos[i].photo_address %>" alt="Free website template" class="img-fluid">
           </div>
+        <% } %>
         </div>
       </div>
     </section>

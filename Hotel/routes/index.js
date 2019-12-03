@@ -235,20 +235,35 @@ router.get('/reservation', function(req, res){
     res.render('reservation', {username: username});
 });
 
-router.get('/rooms', function(req, res){
+router.get('/rooms', async function(req, res){
     var username = false;
     var userrole = false;
     if (req.user) username = req.user.username;
     if (req.user) userrole = req.user.role;
-    console.log(username);
-    res.render('rooms', { username : username, userrole : userrole });
+    //console.log(username);
+    var rooms = await list_room();
+    res.render('rooms', { username : username, userrole : userrole, rooms: rooms });
 });
 
 router.get('/room', function(req, res) {
     var username = false;
     if (req.user) username = req.user.username;
     console.log(username);
-    res.render('roomDetail', { username : username });
+    var details = false;
+    var beds = false;
+    var photos = false;
+    res.render('roomDetail', { username : username, details: details, beds: beds, photos: photos });
+});
+
+router.get('/room/:roomid', async function(req, res) {
+    var username = false;
+    if (req.user) username = req.user.username;
+    //var details = false;
+    var details = await getroomdetailbyid(req.params.roomid);
+    var beds = await getbedsbyroomid(req.params.roomid);
+    //var beds = false;
+    var photos = await getphotosbyroomid(req.params.roomid);
+    res.render('roomDetail', { username : username, details: details, photos: photos, beds: beds});
 });
 
 router.get('/about', function(req, res){
@@ -289,12 +304,14 @@ router.post('/reservation', function(req, res){
     }
 });
 
+/*
 router.get('/edit', function(req, res) {
      var username = false;
     if (req.user) username = req.user.username;
     console.log(username);
     res.render('edit', { username : username });
     //res.redirect('/');
+*/
 
 router.get('/addrooms', function(req, res){
     if(req.user) {
@@ -313,7 +330,7 @@ router.get('/addrooms', function(req, res){
 var dict;
 var files;
 
-router.post('/addrooms', async function(req, res){
+router.post('/addrooms', function(req, res){
     if(req.user) {
         if (req.user.role) {
             dict = {};
@@ -440,7 +457,7 @@ async function add_new_room() {
             });
         });
         let unlock1 = await lock1;
-        let lock2 = new Promise((resolve, reject) => { mysql_db.query("INSERT INTO room_bed SET ?", {hotel_id: "ho000001", 
+        let lock2 = new Promise((resolve, reject) => { mysql_db.query("INSERT INTO room_bed SET ?", { 
             room_id: room_id, bed_type: dict.bed_type1, number_of_beds: dict.number_of_beds1 }, function (err, result) {
                 if (err) {
                     throw err;
@@ -455,8 +472,8 @@ async function add_new_room() {
 
 
         if(dict.bed_type2 !== "") { 
-            let lock3 = new Promise((resolve, reject) => { mysql_db.query("INSERT INTO room_bed SET ?", {hotel_id: "ho000001"
-                , room_id: room_id, bed_type: dict.bed_type2, number_of_beds: dict.number_of_beds2 }, function (err, result) {
+            let lock3 = new Promise((resolve, reject) => { mysql_db.query("INSERT INTO room_bed SET ?", {
+                room_id: room_id, bed_type: dict.bed_type2, number_of_beds: dict.number_of_beds2 }, function (err, result) {
                     if (err) {
                         throw err;
                         mysql_db.rollback(function() {
@@ -471,8 +488,8 @@ async function add_new_room() {
         }
 
         if(dict.bed_type3 !== "") {
-            let lock4 = new Promise((resolve, reject) => { mysql_db.query("INSERT INTO room_bed SET ?", {hotel_id: "ho000001"
-                , room_id: room_id, bed_type: dict.bed_type3, number_of_beds: dict.number_of_beds3 }, function (err, result) {
+            let lock4 = new Promise((resolve, reject) => { mysql_db.query("INSERT INTO room_bed SET ?", {
+                room_id: room_id, bed_type: dict.bed_type3, number_of_beds: dict.number_of_beds3 }, function (err, result) {
                     if (err) {
                         throw err;
                         mysql_db.rollback(function() {
@@ -496,10 +513,163 @@ async function add_new_room() {
                 });
             }
             console.log('Transaction Complete.');
-            mysql_db.end();
+            //mysql_db.end();
         });
     });
 }
 
+async function list_room() {
+    sql = "select  hotel_room.room_id, hotel_room.room_price, room_type.room_name, photo.photo_address,  photo.photo_id from hotel_room left join (room_type) ON ( hotel_room.room_id = room_type.room_id) left join (room_photo) ON (room_photo.room_id = hotel_room.room_id) left join (photo) ON (photo.photo_id = room_photo.photo_id);";
 
+    var arr;
+
+    let lock = new Promise((resolve, reject) => { mysql_db.connect(function(err) {
+        if (err) {
+            console.error('error connecting: ' + err.stack);
+            //return false;
+        }
+        console.log('connected as id ' + mysql_db.threadId);
+        mysql_db.query(sql, function (err, result, fields) {
+            if (err) {
+                throw err;
+                mysql_db.rollback(function() {
+                    throw err;
+                    return;
+                });
+            }
+            var i;
+            arr = [];
+            var indexs = [];
+            for(i = 0; i < result.length; i++) {
+                var dict = {};
+                dict.room_id = result[i].room_id;
+                if(indexs.includes(dict.room_id)) {
+                }
+                else {
+                    dict.room_price = result[i].room_price;
+                    dict.room_name = result[i].room_name;
+                    dict.photo_address = result[i].photo_address.replace("/public", "");
+                    arr.push(dict);
+                    indexs.push(dict.room_id);
+                }
+            }
+            resolve();
+        });
+    });
+    });
+    let unlock = await lock;
+    return arr;
+}
+
+async function getroomdetailbyid(id) {
+    var sql = "select hotel_room.room_id, hotel_room.rooms_avalability, hotel_room.total_num, hotel_room.room_price, room_type.room_name, room_type.room_feature from hotel_room, room_type where room_type.room_id = hotel_room.room_id and hotel_room.room_id = ?;";
+    
+    var dic = {};
+
+    let lock = new Promise((resolve, reject) => { mysql_db.connect(function(err) {
+        if (err) {
+            console.error('error connecting: ' + err.stack);
+            //return false;
+        }
+        console.log('connected as id ' + mysql_db.threadId);
+        mysql_db.query(sql, [id], function (err, result, fields) {
+            if (err) {
+                throw err;
+                mysql_db.rollback(function() {
+                    throw err;
+                    return;
+                });
+            }
+            
+            console.log(result);
+
+            dic.room_id = result[0].room_id;
+            dic.rooms_avalability = result[0].rooms_avalability;
+            dic.total_num = result[0].total_num;
+            dic.room_price = result[0].room_price;
+            dic.room_name = result[0].room_name;
+            dic.room_feature = result[0].room_feature;
+            resolve();
+        });
+    });
+    });
+    let unlock = await lock;
+    console.log(dic);
+    return dic;
+}
+
+async function getbedsbyroomid(id){
+    var sql = "select bed.bed_type, bed.capacity, room_bed.room_id, room_bed.number_of_beds  from bed, room_bed where bed.bed_type = room_bed.bed_type and room_bed.room_id = ?;";
+
+    var arr;
+
+    let lock = new Promise((resolve, reject) => { mysql_db.connect(function(err) {
+        if (err) {
+            console.error('error connecting: ' + err.stack);
+            //return false;
+        }
+        console.log('connected as id ' + mysql_db.threadId);
+
+        mysql_db.query(sql, [id], function (err, result, fields) {
+            if (err) {
+                throw err;
+                mysql_db.rollback(function() {
+                    throw err;
+                    return;
+                });
+            }
+            var i;
+            arr = [];
+            for(i = 0; i < result.length; i++) {
+                var dict = {};
+                dict.room_id = result[i].room_id;
+                dict.bed_type = result[i].bed_type;
+                dict.capacity = result[i].capacity;
+                dict.number_of_beds = result[i].number_of_beds;
+                arr.push(dict);
+            }
+            resolve();
+            console.log(arr);
+        });
+    });
+    });
+    let unlock = await lock;
+    return arr;
+
+}
+
+async function getphotosbyroomid(id) {
+    var sql = "select photo.photo_id, photo.photo_address  from photo, room_photo where room_photo.photo_id = photo.photo_id and room_photo.room_id = ?;";
+    var arr;
+
+    let lock = new Promise((resolve, reject) => { mysql_db.connect(function(err) {
+        if (err) {
+            console.error('error connecting: ' + err.stack);
+            //return false;
+        }
+        console.log('connected as id ' + mysql_db.threadId);
+        mysql_db.query(sql, [id],function (err, result, fields) {
+            if (err) {
+                throw err;
+                mysql_db.rollback(function() {
+                    throw err;
+                    return;
+                });
+            }
+            var i;
+            arr = [];
+            for(i = 0; i < result.length; i++) {
+                var dict = {};
+                dict.photo_id = result[i].photo_id;
+                dict.photo_address = result[i].photo_address.replace("/public", "");
+                arr.push(dict);
+            }
+            resolve();
+            console.log(arr);
+        });
+    });
+    });
+    let unlock = await lock;
+    return arr;
+}
 module.exports = router;
