@@ -293,6 +293,11 @@ router.get('/addrooms', function(req, res){
     }
 });
 
+router.get('/new', function(req, res) {
+    res.render('newroom', { });
+    //res.redirect('/');
+});
+
 module.exports = router;
 
 function search_available_rooms(req){
