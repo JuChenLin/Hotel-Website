@@ -34,7 +34,7 @@
           <div class="col-md-10 text-center" data-aos="fade">
             <h1 class="heading mb-3">Rooms</h1>
             <ul class="custom-breadcrumbs mb-4">
-              <li><a href="index.html">Home</a></li>
+              <li><a href="/index">Home</a></li>
               <li>&bullet;</li>
               <li>Rooms</li>
             </ul>
@@ -56,7 +56,7 @@
         <div class="row check-availabilty" id="next">
           <div class="block-32" data-aos="fade-up" data-aos-offset="-200">
 
-            <form action="#">
+            <form action="/reservation" method="POST">
               <div class="row">
                 <div class="col-md-6 mb-3 mb-lg-0 col-lg-3">
                   <label for="checkin_date" class="font-weight-bold text-black">Check In</label>
@@ -101,7 +101,7 @@
                   </div>
                 </div>
                 <div class="col-md-6 col-lg-3 align-self-end">
-                  <button class="btn btn-primary btn-block text-white">Check Availabilty</button>
+                  <button type="submit" class="btn btn-primary btn-block text-white">Check Availabilty</button>
                 </div>
               </div>
             </form>
@@ -115,7 +115,14 @@
     
     <section class="section">
       <div class="container">
-        
+
+        <% if (userrole) { %>
+        <div class="col-md-6 col-lg-3" style="float: right;">
+            <a href="/rooms" class="btn btn-info btn-block text-white">Add a room type</a>
+        </div>
+        <br>
+        <% } %>
+
         <div class="row">
           <div class="col-md-6 col-lg-4 mb-5" data-aos="fade-up">
             <a href="#" class="room">

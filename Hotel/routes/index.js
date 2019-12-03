@@ -2,6 +2,12 @@ var express = require('express');
 var router = express.Router();
 var monk = require('monk');
 var db = monk('localhost:27017/Hotel');
+var mysql = require('mysql');
+var mysql_db = mysql.createConnection({
+    host: "localhost",
+    user: "root",
+    password: "root"
+});
 
 var bodyParser = require('body-parser')
 var methodOverride = require('method-override');
@@ -226,9 +232,11 @@ router.get('/reservation', function(req, res){
 
 router.get('/rooms', function(req, res){
     var username = false;
+    var userrole = false;
     if (req.user) username = req.user.username;
+    if (req.user) userrole = req.user.role;
     console.log(username);
-    res.render('rooms', { username : username });
+    res.render('rooms', { username : username, userrole : userrole });
 });
 
 router.get('/about', function(req, res){
@@ -245,5 +253,38 @@ router.get('/contact', function(req, res){
     res.render('contact', { username : username });
 });
 
+router.post('/reservation', function(req, res){
+   
+    if(req.user) {
+        search_available_rooms(req);
+    }
+    else{
+        var collection = db.get('tmp_reservation');
+        collection.insert({
+            name: req.body.name,
+            phone: req.body.phone,
+            email: req.body.email,
+            checkin_date: req.body.checkin_date,
+            chekcout_date: req.body.chekcout_date,
+            adults: req.body.adults,
+            children: req.body.children,
+            message: req.body.message
+        }, function(err, video) {
+            if (err) throw err;
+            res.redirect('/reservation');
+        });
+
+    }
+});
 
 module.exports = router;
+
+function search_available_rooms(req){
+    con.connect(function(err) {
+        if (err) throw err;
+        sql = "";
+        con.query(sql, function (err, result) {
+            if (err) throw err;
+        });
+    }); 
+}
