@@ -259,7 +259,10 @@ router.get('/new', function(req, res) {
 });
 
 router.get('/edit', function(req, res) {
-    res.render('edit', { });
+     var username = false;
+    if (req.user) username = req.user.username;
+    console.log(username);
+    res.render('edit', { username : username });
     //res.redirect('/');
 });
 
