@@ -5,8 +5,10 @@ var db = monk('localhost:27017/Hotel');
 var mysql = require('mysql');
 var mysql_db = mysql.createConnection({
     host: "localhost",
+    port: 3306,
     user: "root",
-    password: "root"
+    password: "root",
+    database: "hotel"
 });
 
 var bodyParser = require('body-parser')
@@ -298,8 +300,8 @@ router.get('/addrooms', function(req, res){
 router.post('/addrooms', function(req, res){
     if(req.user) {
         if (req.user.role) {
-            //add_new_room(req);
-
+            var result = add_new_room(req);
+            res.redirect('/rooms');
 
         } 
         else {
@@ -316,20 +318,27 @@ router.get('/upload', function(req, res) {
 });
 
 router.post('/upload', function(req, res){
+    var id = 1;
+    var dict = {};
+    var files = [];
     new formidable.IncomingForm().parse(req)
     .on('field', (name, field) => {
-      console.log('Field', name, field)
+        console.log('Field', name, field)
+        dict[name] = field
     })
     .on('fileBegin', (name, file) => {
-        file.path = process.cwd() + '/public/room_photo/' + file.name
+        file.path = process.cwd() + '/public/room_photo/' + dict.room_name + "-" + id;
+        id++;
+        files.push(file.name);
+        console.log(file.name);
         console.log('Uploaded file', name, file)
     })
     .on('aborted', () => {
-      console.error('Request aborted by the user')
+        console.error('Request aborted by the user')
     })
     .on('error', (err) => {
-      console.error('Error', err)
-      throw err
+        console.error('Error', err)
+        throw err
     })
 });
 
@@ -346,11 +355,133 @@ function search_available_rooms(req){
 }
 
 function add_new_room(req){
+
+    var id = 1;
+    var dict = {};
+    var files = [];
+    new formidable.IncomingForm().parse(req)
+    .on('field', (name, field) => {
+        console.log('Field', name, field)
+        dict[name] = field
+    })
+    .on('fileBegin', (name, file) => {
+        file.path = process.cwd() + '/public/room_photo/' + dict.room_name + "-" + id;
+        id++;
+        files.push(file.name);
+        console.log(file.name);
+        console.log('Uploaded file', name, file)
+    })
+    .on('aborted', () => {
+        console.error('Request aborted by the user')
+        return false;
+    })
+    .on('error', (err) => {
+        console.error('Error', err)
+        throw err
+        return false;
+    })
+
     con.connect(function(err) {
-        if (err) throw err;
-        con.query("INSERT INTO room_type SET ?", {room_feature: req.body.room_feature, room_name: req.body.room_name}, function (err, result) {
-            if (err) throw err;
+        if (err) {
+            console.error('error connecting: ' + err.stack);
+            return false;
+        }
+        console.log('connected as id ' + connection.threadId);
+    });
+
+    con.beginTransaction(function(err) {
+        if (err) { 
+            throw err;
+            return false;
+        }
+        var room_id;
+        con.query("INSERT INTO room_type SET ?", {room_feature: dict.room_feature, room_name: dict.room_name}, function (err, result) {
+            if (err) {
+                throw err;
+                con.rollback(function() {
+                    throw err;
+                    return false;
+                });
+            }
+            room_id = result.insertId;
         });
-        con.query("");
-    }); 
+        var i;
+        for (i=0; i < files.length; i++) {
+            var photo_id;
+            con.query("INSERT INTO photo SET ?", {photo_address: files[i]}, function (err, result) {
+                if (err) {
+                    throw err;
+                    con.rollback(function() {
+                        throw err;
+                        return false;
+                    });
+                }
+                photo_id = result.insertId;
+            });
+
+            con.query("INSERT INTO room_photo SET ?", {room_id: room_id, photo_id: photo_id }, function (err, result) {
+                if (err) {
+                    throw err;
+                    con.rollback(function() {
+                        throw err;
+                        return false;
+                    });
+                }            
+            });
+        }
+
+        con.query("INSERT INTO hotel_room SET ?", {hotel_id: "ho000001", room_id: room_id, total_num: dict.total_num, room_price: dict.room_price }, function (err, result) {
+                if (err) {
+                    throw err;
+                    con.rollback(function() {
+                        throw err;
+                        return false;
+                    });
+                }
+        });
+
+        con.query("INSERT INTO room_bed SET ?", {room_id: room_id, bed_type: dict.bed_type1, number_of_beds: dict.number_of_beds1 }, function (err, result) {
+                if (err) {
+                    throw err;
+                    con.rollback(function() {
+                        throw err;
+                        return false;
+                    });
+                }
+        });
+
+        con.query("INSERT INTO room_bed SET ?", {room_id: room_id, bed_type: dict.bed_type2, number_of_beds: dict.number_of_beds2 }, function (err, result) {
+                if (err) {
+                    throw err;
+                    con.rollback(function() {
+                        throw err;
+                        return false;
+                    });
+                }
+        });
+
+        con.query("INSERT INTO room_bed SET ?", {room_id: room_id, bed_type: dict.bed_type3, number_of_beds: dict.number_of_beds3 }, function (err, result) {
+                if (err) {
+                    throw err;
+                    con.rollback(function() {
+                        throw err;
+                        return false;
+                    });
+                }
+        });
+
+        con.commit(function(err) {
+            if (err) { 
+                con.rollback(function() {
+                    throw err;
+                    return false;
+                });
+            }
+            console.log('Transaction Complete.');
+            con.end();
+        });
+    });
+}
+
+function add_photo(value, index, array) {
 }
