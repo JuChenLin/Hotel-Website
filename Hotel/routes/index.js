@@ -18,6 +18,7 @@ var passport = require('passport');
 var Customer = require('../models/customers');
 
 var formidable = require('formidable');
+var path = require('path');
 
 router.use(bodyParser.urlencoded({ extended: false }));
 router.use(methodOverride(function(req, res){
@@ -282,6 +283,8 @@ router.post('/reservation', function(req, res){
 });
 
 router.get('/addrooms', function(req, res){
+    res.render('newroom', {});
+    /*
     if(req.user) {
         if (req.user.role) {
             //add_new_room(req);
@@ -295,9 +298,16 @@ router.get('/addrooms', function(req, res){
     else {
         res.redirect('/rooms');
     }
+    */
 });
 
-router.post('/addrooms', function(req, res){
+router.post('/addrooms', async function(req, res){
+    dict = {};
+    files = [];
+    add_room_photo(req);
+    res.redirect('/rooms');
+
+    /*
     if(req.user) {
         if (req.user.role) {
             var result = add_new_room(req);
@@ -311,8 +321,10 @@ router.post('/addrooms', function(req, res){
     else {
         res.redirect('/rooms');
     }
+    */
 });
 
+/*
 router.get('/upload', function(req, res) {
    res.render('upload', {}); 
 });
@@ -340,9 +352,13 @@ router.post('/upload', function(req, res){
         console.error('Error', err)
         throw err
     })
-});
 
-module.exports = router;
+router.get('/new', function(req, res) {
+    res.render('newroom', { });
+    //res.redirect('/');
+});
+*/
+
 
 function search_available_rooms(req){
     con.connect(function(err) {
@@ -354,81 +370,178 @@ function search_available_rooms(req){
     }); 
 }
 
-function add_new_room(req){
+var dict;
+var files;
 
-    var id = 1;
-    var dict = {};
-    var files = [];
-    new formidable.IncomingForm().parse(req)
-    .on('field', (name, field) => {
-        console.log('Field', name, field)
-        dict[name] = field
-    })
-    .on('fileBegin', (name, file) => {
-        file.path = process.cwd() + '/public/room_photo/' + dict.room_name + "-" + id;
-        id++;
-        files.push(file.name);
-        console.log(file.name);
-        console.log('Uploaded file', name, file)
-    })
-    .on('aborted', () => {
-        console.error('Request aborted by the user')
-        return false;
-    })
-    .on('error', (err) => {
-        console.error('Error', err)
-        throw err
-        return false;
-    })
+function add_room_photo(req){
 
-    con.connect(function(err) {
+        new formidable.IncomingForm().parse(req)
+            .on('field', (name, field) => {
+                console.log('Field', name, field)
+                dict[name] = field
+            })
+            .on('fileBegin', (name, file) => {
+                var random_id = Math.random().toString(36).replace(/[^a-z]+/g, '').substr(0, 8);
+                var new_filename = '/public/room_photo/' + "room-" + random_id + path.extname(file.name);
+                file.path = process.cwd() + new_filename;
+                files.push(new_filename);
+                console.log(new_filename);
+                //console.log('Uploaded file', name, file);
+            })
+            .on('end', () => {
+                console.error('Upload end.');
+                add_new_room();
+                return;
+            })
+            .on('aborted', () => {
+                console.error('Request aborted by the user');
+                //return false;
+            })
+            .on('error', (err) => {
+                console.error('Error', err);
+                throw err;
+                //return false;
+            })
+}
+
+
+async function add_new_room() {
+    
+    console.log(files);
+    console.log(dict);
+    console.log("con sql");
+
+    mysql_db.connect(function(err) {
         if (err) {
             console.error('error connecting: ' + err.stack);
-            return false;
+            //return false;
         }
-        console.log('connected as id ' + connection.threadId);
+        console.log('connected as id ' + mysql_db.threadId);
     });
 
-    con.beginTransaction(function(err) {
+
+    mysql_db.beginTransaction(async function(err) {
+        console.log('beginTransaction');
         if (err) { 
             throw err;
-            return false;
+            //return false;
         }
         var room_id;
-        con.query("INSERT INTO room_type SET ?", {room_feature: dict.room_feature, room_name: dict.room_name}, function (err, result) {
+        var i;
+        let loop_lock = new Promise((resolve, reject) => { mysql_db.query("INSERT INTO room_type SET ?", 
+            {room_feature: dict.room_feature, room_name: dict.room_name}, function (err, result) {
             if (err) {
                 throw err;
-                con.rollback(function() {
+                mysql_db.rollback(function() {
                     throw err;
-                    return false;
+                    return;
                 });
             }
             room_id = result.insertId;
-        });
-        var i;
-        for (i=0; i < files.length; i++) {
-            var photo_id;
-            con.query("INSERT INTO photo SET ?", {photo_address: files[i]}, function (err, result) {
-                if (err) {
-                    throw err;
-                    con.rollback(function() {
+            console.log("room_id: " + room_id);
+            for (i=0; i < files.length; i++) {
+                var photo_id;
+                mysql_db.query("INSERT INTO photo SET ?", {photo_address: files[i]}, function (err, result) {
+                    if (err) {
                         throw err;
-                        return false;
+                        mysql_db.rollback(function() {
+                            throw err;
+                            return;
+                        });
+                    }
+                    photo_id = result.insertId;
+                    console.log("room_id : " + room_id);
+                    console.log("photo_id : " + photo_id);
+                    mysql_db.query("INSERT INTO room_photo SET ?", {room_id: room_id, photo_id: photo_id }, 
+                        function (err, result) {
+                            if (err) {
+                                throw err;
+                                mysql_db.rollback(function() {
+                                    console.log("roll back");
+                                    throw err;
+                                    return;
+                                });
+                            }            
+                        });
                     });
                 }
-                photo_id = result.insertId;
+                resolve();
             });
-
-            con.query("INSERT INTO room_photo SET ?", {room_id: room_id, photo_id: photo_id }, function (err, result) {
+        });
+        let loop_unlook = await loop_lock;
+        let lock1 = new Promise((resolve, reject) => { mysql_db.query("INSERT INTO hotel_room SET ?", {hotel_id: "ho000001", 
+            room_id: room_id, total_num: dict.total_num, room_price: dict.room_price }, function (err, result) {
                 if (err) {
                     throw err;
                     con.rollback(function() {
                         throw err;
-                        return false;
+                        return;
                     });
-                }            
+                }
+                resolve();
             });
+        });
+        let unlock1 = await lock1;
+        let lock2 = new Promise((resolve, reject) => { mysql_db.query("INSERT INTO room_bed SET ?", {hotel_id: "ho000001", 
+            room_id: room_id, bed_type: dict.bed_type1, number_of_beds: dict.number_of_beds1 }, function (err, result) {
+                if (err) {
+                    throw err;
+                    con.rollback(function() {
+                        throw err;
+                        return;
+                    });
+                }
+                resolve();
+            });
+        });
+
+
+        if(dict.bed_type2 !== "") { 
+            let lock3 = new Promise((resolve, reject) => { mysql_db.query("INSERT INTO room_bed SET ?", {hotel_id: "ho000001"
+                , room_id: room_id, bed_type: dict.bed_type2, number_of_beds: dict.number_of_beds2 }, function (err, result) {
+                    if (err) {
+                        throw err;
+                        mysql_db.rollback(function() {
+                            throw err;
+                            return;
+                        });
+                    }
+                    resolve();
+                });
+            });
+            let unlock3 = await lock3;
         }
+
+        if(dict.bed_type3 !== "") {
+            let lock4 = new Promise((resolve, reject) => { mysql_db.query("INSERT INTO room_bed SET ?", {hotel_id: "ho000001"
+                , room_id: room_id, bed_type: dict.bed_type3, number_of_beds: dict.number_of_beds3 }, function (err, result) {
+                    if (err) {
+                        throw err;
+                        mysql_db.rollback(function() {
+                            throw err;
+                            return;
+                        });
+                    }
+                    resolve();
+                });
+            });
+            let unlock4 = await lock4;
+        }
+
+        let unlock2 = await lock2;
+
+        mysql_db.commit(function(err) {
+            if (err) { 
+                mysql_db.rollback(function() {
+                    throw err;
+                    return;
+                });
+            }
+            console.log('Transaction Complete.');
+            mysql_db.end();
+        });
+        
+        /*
 
         con.query("INSERT INTO hotel_room SET ?", {hotel_id: "ho000001", room_id: room_id, total_num: dict.total_num, room_price: dict.room_price }, function (err, result) {
                 if (err) {
@@ -449,7 +562,8 @@ function add_new_room(req){
                     });
                 }
         });
-
+        
+        
         con.query("INSERT INTO room_bed SET ?", {room_id: room_id, bed_type: dict.bed_type2, number_of_beds: dict.number_of_beds2 }, function (err, result) {
                 if (err) {
                     throw err;
@@ -469,19 +583,15 @@ function add_new_room(req){
                     });
                 }
         });
+        */
+        
 
-        con.commit(function(err) {
-            if (err) { 
-                con.rollback(function() {
-                    throw err;
-                    return false;
-                });
-            }
-            console.log('Transaction Complete.');
-            con.end();
-        });
+        
     });
+    
 }
 
 function add_photo(value, index, array) {
 }
+
+module.exports = router;
