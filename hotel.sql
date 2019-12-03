@@ -27,7 +27,7 @@ create table amenities (
 ); 
 
 create table hotel_amenities(
-    hotel_id    varchar(10),
+    hotel_id varchar(10) not null, 
     amenity_id  integer
 );
 
@@ -40,8 +40,8 @@ create table room_type (
 );
 
 create table hotel_room (
-    hotel_id int not null,
-    room_id varchar(10) not null,
+    hotel_id varchar(10) not null,
+    room_id int not null,
     rooms_avalability boolean default true,
     total_num int not null,
     room_price int not null, 
@@ -49,8 +49,8 @@ create table hotel_room (
 );
 
 create table room_not_available_date (
-    hotel_id int not null,
-    room_id varchar(10) not null,
+    hotel_id varchar(10) not null, 
+    room_id int not null,
     not_available_date date not null,
     not_available_num int not null,
     primary key(hotel_id, room_id, not_available_date)
@@ -83,7 +83,7 @@ create table room_photo(
 );
 
 create table hotel_photo(
-    hotel_id int not null,
+    hotel_id varchar(10) not null,
     photo_id int not null
 );
 
@@ -97,12 +97,25 @@ create table bed_photo(
 
 
 -- -- part 2. foriegn key reference
--- alter table room_price add constraint tp_ro_ey foreign key(room_id, hotel_id) references room(room_id, hotel_id);
--- alter table room add constraint ro_h_key foreign key(hotel_id) references hotel(hotel_id);
--- alter table hotel_amenities add constraint ha_h_key foreign key(hotel_id) references hotel(hotel_id);
--- alter table hotel_amenities add constraint ha_a_key foreign key(amenity_id) references amenities(amenity_id);
--- alter table room_bed add constraint rb_r_key foreign key(hotel_id,room_id) references room(hotel_id,room_id);
--- alter table room_bed add constraint rb_b_key foreign key(bed_type) references bed(bed_type);
+alter table hotel_amenities add constraint ha_h_key foreign key(hotel_id) references hotel(hotel_id);
+alter table hotel_amenities add constraint ha_a_key foreign key(amenity_id) references amenities(amenity_id);
+alter table hotel_room add constraint hr_h_key foreign key(hotel_id) references hotel(hotel_id);
+alter table hotel_room add constraint hr_r_key foreign key(room_id) references room_type(room_id);
+alter table room_not_available_date add constraint rna_h_key foreign key(hotel_id) references hotel(hotel_id);
+alter table room_not_available_date add constraint rna_r_key foreign key(room_id) references room_type(room_id);
+alter table room_bed add constraint rb_h_key foreign key(hotel_id) references hotel(hotel_id);
+alter table room_bed add constraint rb_r_key foreign key(room_id) references room_type(room_id);
+alter table room_bed add constraint rb_b_key foreign key(bed_type) references bed(bed_type);
+
+alter table room_photo add constraint rp_r_key foreign key(room_id) references room_type(room_id);
+alter table room_photo add constraint rp_pr_key foreign key(photo_id) references photo(photo_id);
+
+alter table hotel_photo add constraint rp_h_key foreign key(hotel_id) references hotel(hotel_id);
+alter table hotel_photo add constraint rp_ph_key foreign key(photo_id) references photo(photo_id);
+
+alter table bed_photo add constraint rp_b_key foreign key(bed_type) references bed(bed_type);
+alter table bed_photo add constraint rp_pb_key foreign key(photo_id) references photo(photo_id);
+
 
 -- -- part 3. data insertion
 
