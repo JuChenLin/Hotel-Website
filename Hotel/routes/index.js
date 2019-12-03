@@ -224,4 +224,26 @@ router.get('/reservation', function(req, res){
     res.render('reservation', {username: username});
 });
 
+router.get('/rooms', function(req, res){
+    var username = false;
+    if (req.user) username = req.user.username;
+    console.log(username);
+    res.render('rooms', { username : username });
+});
+
+router.get('/about', function(req, res){
+    var username = false;
+    if (req.user) username = req.user.username;
+    console.log(username);
+    res.render('about', { username : username });
+});
+
+router.get('/contact', function(req, res){
+    var username = false;
+    if (req.user) username = req.user.username;
+    console.log(username);
+    res.render('contact', { username : username });
+});
+
+
 module.exports = router;

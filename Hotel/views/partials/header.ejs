@@ -1,7 +1,49 @@
-<!DOCTYPE html>
-<html>
-<head>
-	<title>Vidzy application</title>
-	<link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css" integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous">
-</head>
-<body>
+<header class="site-header js-site-header">
+      <div class="container-fluid">
+        <div class="row align-items-center">
+          <div class="col-6 col-lg-8 site-logo" data-aos="fade"><a href="/index">Super Hotel</a></div>
+
+          <div class="col-3 col-lg-2">
+        
+              <% if (username) { %>
+                <div class="flex">
+                    <div class="username-display"><a>Hello, <%= username %></a></div>
+                    <a href="/logout" class="btn btn-outline-danger">Logout</a>
+                </div>
+              <% } else { %>
+              <a href="/register" class="btn btn-outline-primary">Sigup</a>
+              <a href="/login" class="btn btn-outline-success">Login</a>
+              <% } %>
+
+          </div>
+
+            <div class="site-menu-toggle js-site-menu-toggle"  data-aos="fade">
+              <span></span>
+              <span></span>
+              <span></span>
+            </div>
+            <!-- END menu-toggle -->
+
+            <div class="site-navbar js-site-navbar">
+              <nav role="navigation">
+                <div class="container">
+                  <div class="row full-height align-items-center">
+                    <div class="col-md-6 mx-auto">
+                      <ul class="list-unstyled menu">
+                        <li><a href="/index">Home</a></li>
+                        <li><a href="/rooms">Rooms</a></li>
+                        <li><a href="/about">About</a></li>
+                        <li><a href="/contact">Contact</a></li>
+                        <li><a href="/reservation">Reservation</a></li>
+                      </ul>
+                    </div>
+                  </div>
+                </div>
+              </nav>
+            </div>
+          </div>
+        </div>
+      </div>
+    </header>
+    <!-- END head -->
+
