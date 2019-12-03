@@ -3,7 +3,7 @@
   <head>
     <meta charset="utf-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
-    <title>Super Hotel Reservation</title>
+    <title>Sogo Hotel by Colorlib.com</title>
     <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
     <meta name="description" content="" />
     <meta name="keywords" content="" />
@@ -17,7 +17,6 @@
     <link rel="stylesheet" href="css/bootstrap-datepicker.css">
     <link rel="stylesheet" href="css/jquery.timepicker.css">
     <link rel="stylesheet" href="css/fancybox.min.css">
-    <link rel="stylesheet" href="css/index.css">
     
     <link rel="stylesheet" href="fonts/ionicons/css/ionicons.min.css">
     <link rel="stylesheet" href="fonts/fontawesome/css/font-awesome.min.css">
@@ -26,6 +25,7 @@
     <link rel="stylesheet" href="css/style.css">
   </head>
   <body>
+    
     <header class="site-header js-site-header">
       <div class="container-fluid">
         <div class="row align-items-center">
@@ -45,8 +45,6 @@
 
           </div>
 
-          <div class="col-3 col-lg-2">
-
             <div class="site-menu-toggle js-site-menu-toggle"  data-aos="fade">
               <span></span>
               <span></span>
@@ -56,17 +54,16 @@
 
             <div class="site-navbar js-site-navbar">
               <nav role="navigation">
-                  
                 <div class="container">
                   <div class="row full-height align-items-center">
                     <div class="col-md-6 mx-auto">
-                        <ul class="list-unstyled menu">
-                        <li class="active"><a href="/index">Home</a></li>
+                      <ul class="list-unstyled menu">
+                        <li><a href="/index">Home</a></li>
                         <li><a href="rooms.html">Rooms</a></li>
                         <li><a href="about.html">About</a></li>
                         <li><a href="events.html">Events</a></li>
                         <li><a href="contact.html">Contact</a></li>
-                        <li><a href="/reservation">Reservation</a></li>
+                        <li class="active"><a href="/reservation">Reservation</a></li>
                       </ul>
                     </div>
                   </div>
@@ -79,12 +76,16 @@
     </header>
     <!-- END head -->
 
-    <section class="site-hero overlay" style="background-image: url(images/hero_4.jpg)" data-stellar-background-ratio="0.5">
+    <section class="site-hero inner-page overlay" style="background-image: url(images/hero_4.jpg)" data-stellar-background-ratio="0.5">
       <div class="container">
         <div class="row site-hero-inner justify-content-center align-items-center">
-          <div class="col-md-10 text-center" data-aos="fade-up">
-            <span class="custom-caption text-uppercase text-white d-block  mb-3">Welcome To 5 <span class="fa fa-star text-primary"></span>   Hotel</span>
-            <h1 class="heading">A Best Place To Stay</h1>
+          <div class="col-md-10 text-center" data-aos="fade">
+            <h1 class="heading mb-3">Reservation Form</h1>
+            <ul class="custom-breadcrumbs mb-4">
+              <li><a href="/index">Home</a></li>
+              <li>&bullet;</li>
+              <li>Reservation</li>
+            </ul>
           </div>
         </div>
       </div>
@@ -97,182 +98,98 @@
     </section>
     <!-- END section -->
 
-    <section class="section bg-light pb-0"  >
+    <section class="section contact-section" id="next">
       <div class="container">
-       
-        <div class="row check-availabilty" id="next">
-          <div class="block-32" data-aos="fade-up" data-aos-offset="-200">
-
-            <form action="#">
+        <div class="row">
+          <div class="col-md-7" data-aos="fade-up" data-aos-delay="100">
+            
+            <form action="#" method="post" class="bg-white p-md-5 p-4 mb-5 border">
               <div class="row">
-                <div class="col-md-6 mb-3 mb-lg-0 col-lg-3">
-                  <label for="checkin_date" class="font-weight-bold text-black">Check In</label>
+                <div class="col-md-6 form-group">
+                  <label class="text-black font-weight-bold" for="name">Name</label>
+                  <input type="text" id="name" class="form-control ">
+                </div>
+                <div class="col-md-6 form-group">
+                  <label class="text-black font-weight-bold" for="phone">Phone</label>
+                  <input type="text" id="phone" class="form-control ">
+                </div>
+              </div>
+          
+              <div class="row">
+                <div class="col-md-12 form-group">
+                  <label class="text-black font-weight-bold" for="email">Email</label>
+                  <input type="email" id="email" class="form-control ">
+                </div>
+              </div>
+
+              <div class="row">
+                <div class="col-md-6 form-group">
+                  <label class="text-black font-weight-bold" for="checkin_date">Date Check In</label>
+                  <input type="text" id="checkin_date" class="form-control">
+                </div>
+                <div class="col-md-6 form-group">
+                  <label class="text-black font-weight-bold" for="checkout_date">Date Check Out</label>
+                  <input type="text" id="checkout_date" class="form-control">
+                </div>
+              </div>
+
+              <div class="row">
+                <div class="col-md-6 form-group">
+                  <label for="adults" class="font-weight-bold text-black">Adults</label>
                   <div class="field-icon-wrap">
-                    <div class="icon"><span class="icon-calendar"></span></div>
-                    <input type="text" id="checkin_date" class="form-control">
+                    <div class="icon"><span class="ion-ios-arrow-down"></span></div>
+                    <select name="" id="adults" class="form-control">
+                      <option value="">1</option>
+                      <option value="">2</option>
+                      <option value="">3</option>
+                      <option value="">4+</option>
+                    </select>
                   </div>
                 </div>
-                <div class="col-md-6 mb-3 mb-lg-0 col-lg-3">
-                  <label for="checkout_date" class="font-weight-bold text-black">Check Out</label>
+                <div class="col-md-6 form-group">
+                  <label for="children" class="font-weight-bold text-black">Children</label>
                   <div class="field-icon-wrap">
-                    <div class="icon"><span class="icon-calendar"></span></div>
-                    <input type="text" id="checkout_date" class="form-control">
+                    <div class="icon"><span class="ion-ios-arrow-down"></span></div>
+                    <select name="" id="children" class="form-control">
+                      <option value="">1</option>
+                      <option value="">2</option>
+                      <option value="">3</option>
+                      <option value="">4+</option>
+                    </select>
                   </div>
                 </div>
-                <div class="col-md-6 mb-3 mb-md-0 col-lg-3">
-                  <div class="row">
-                    <div class="col-md-6 mb-3 mb-md-0">
-                      <label for="adults" class="font-weight-bold text-black">Adults</label>
-                      <div class="field-icon-wrap">
-                        <div class="icon"><span class="ion-ios-arrow-down"></span></div>
-                        <select name="" id="adults" class="form-control">
-                          <option value="">1</option>
-                          <option value="">2</option>
-                          <option value="">3</option>
-                          <option value="">4+</option>
-                        </select>
-                      </div>
-                    </div>
-                    <div class="col-md-6 mb-3 mb-md-0">
-                      <label for="children" class="font-weight-bold text-black">Children</label>
-                      <div class="field-icon-wrap">
-                        <div class="icon"><span class="ion-ios-arrow-down"></span></div>
-                        <select name="" id="children" class="form-control">
-                          <option value="">1</option>
-                          <option value="">2</option>
-                          <option value="">3</option>
-                          <option value="">4+</option>
-                        </select>
-                      </div>
-                    </div>
-                  </div>
+              </div>
+
+              
+
+              <div class="row mb-4">
+                <div class="col-md-12 form-group">
+                  <label class="text-black font-weight-bold" for="message">Notes</label>
+                  <textarea name="message" id="message" class="form-control " cols="30" rows="8"></textarea>
                 </div>
-                <div class="col-md-6 col-lg-3 align-self-end">
-                  <button class="btn btn-primary btn-block text-white">Check Availabilty</button>
+              </div>
+              <div class="row">
+                <div class="col-md-6 form-group">
+                  <input type="submit" value="Reserve Now" class="btn btn-primary text-white py-3 px-5 font-weight-bold">
                 </div>
               </div>
             </form>
-          </div>
 
-
-        </div>
-      </div>
-    </section>
-
-    <section class="py-5 bg-light">
-      <div class="container">
-        <div class="row align-items-center">
-          <div class="col-md-12 col-lg-7 ml-auto order-lg-2 position-relative mb-5" data-aos="fade-up">
-            <figure class="img-absolute">
-              <img src="images/food-1.jpg" alt="Image" class="img-fluid">
-            </figure>
-            <img src="images/img_1.jpg" alt="Image" class="img-fluid rounded">
           </div>
-          <div class="col-md-12 col-lg-4 order-lg-1" data-aos="fade-up">
-            <h2 class="heading">Welcome!</h2>
-            <p class="mb-4">Far far away, behind the word mountains, far from the countries Vokalia and Consonantia, there live the blind texts. Separated they live in Bookmarksgrove right at the coast of the Semantics, a large language ocean.</p>
-            <p><a href="#" class="btn btn-primary text-white py-2 mr-3">Learn More</a> <span class="mr-3 font-family-serif"><em>or</em></span> <a href="https://vimeo.com/channels/staffpicks/93951774"  data-fancybox class="text-uppercase letter-spacing-1">See video</a></p>
-          </div>
-          
-        </div>
-      </div>
-    </section>
-
-    <section class="section">
-      <div class="container">
-        <div class="row justify-content-center text-center mb-5">
-          <div class="col-md-7">
-            <h2 class="heading" data-aos="fade-up">Rooms &amp; Suites</h2>
-            <p data-aos="fade-up" data-aos-delay="100">Far far away, behind the word mountains, far from the countries Vokalia and Consonantia, there live the blind texts. Separated they live in Bookmarksgrove right at the coast of the Semantics, a large language ocean.</p>
-          </div>
-        </div>
-        <div class="row">
-          <div class="col-md-6 col-lg-4" data-aos="fade-up">
-            <a href="#" class="room">
-              <figure class="img-wrap">
-                <img src="images/img_1.jpg" alt="Free website template" class="img-fluid mb-3">
-              </figure>
-              <div class="p-3 text-center room-info">
-                <h2>Single Room</h2>
-                <span class="text-uppercase letter-spacing-1">90$ / per night</span>
-              </div>
-            </a>
-          </div>
-
-          <div class="col-md-6 col-lg-4" data-aos="fade-up">
-            <a href="#" class="room">
-              <figure class="img-wrap">
-                <img src="images/img_2.jpg" alt="Free website template" class="img-fluid mb-3">
-              </figure>
-              <div class="p-3 text-center room-info">
-                <h2>Family Room</h2>
-                <span class="text-uppercase letter-spacing-1">120$ / per night</span>
-              </div>
-            </a>
-          </div>
-
-          <div class="col-md-6 col-lg-4" data-aos="fade-up">
-            <a href="#" class="room">
-              <figure class="img-wrap">
-                <img src="images/img_3.jpg" alt="Free website template" class="img-fluid mb-3">
-              </figure>
-              <div class="p-3 text-center room-info">
-                <h2>Presidential Room</h2>
-                <span class="text-uppercase letter-spacing-1">250$ / per night</span>
-              </div>
-            </a>
-          </div>
-
-
-        </div>
-      </div>
-    </section>
-    
-    
-    <section class="section slider-section bg-light">
-      <div class="container">
-        <div class="row justify-content-center text-center mb-5">
-          <div class="col-md-7">
-            <h2 class="heading" data-aos="fade-up">Photos</h2>
-            <p data-aos="fade-up" data-aos-delay="100">Far far away, behind the word mountains, far from the countries Vokalia and Consonantia, there live the blind texts. Separated they live in Bookmarksgrove right at the coast of the Semantics, a large language ocean.</p>
-          </div>
-        </div>
-        <div class="row">
-          <div class="col-md-12">
-            <div class="home-slider major-caousel owl-carousel mb-5" data-aos="fade-up" data-aos-delay="200">
-              <div class="slider-item">
-                <a href="images/slider-1.jpg" data-fancybox="images" data-caption="Caption for this image"><img src="images/slider-1.jpg" alt="Image placeholder" class="img-fluid"></a>
-              </div>
-              <div class="slider-item">
-                <a href="images/slider-2.jpg" data-fancybox="images" data-caption="Caption for this image"><img src="images/slider-2.jpg" alt="Image placeholder" class="img-fluid"></a>
-              </div>
-              <div class="slider-item">
-                <a href="images/slider-3.jpg" data-fancybox="images" data-caption="Caption for this image"><img src="images/slider-3.jpg" alt="Image placeholder" class="img-fluid"></a>
-              </div>
-              <div class="slider-item">
-                <a href="images/slider-4.jpg" data-fancybox="images" data-caption="Caption for this image"><img src="images/slider-4.jpg" alt="Image placeholder" class="img-fluid"></a>
-              </div>
-              <div class="slider-item">
-                <a href="images/slider-5.jpg" data-fancybox="images" data-caption="Caption for this image"><img src="images/slider-5.jpg" alt="Image placeholder" class="img-fluid"></a>
-              </div>
-              <div class="slider-item">
-                <a href="images/slider-6.jpg" data-fancybox="images" data-caption="Caption for this image"><img src="images/slider-6.jpg" alt="Image placeholder" class="img-fluid"></a>
-              </div>
-              <div class="slider-item">
-                <a href="images/slider-7.jpg" data-fancybox="images" data-caption="Caption for this image"><img src="images/slider-7.jpg" alt="Image placeholder" class="img-fluid"></a>
+          <div class="col-md-5" data-aos="fade-up" data-aos-delay="200">
+            <div class="row">
+              <div class="col-md-10 ml-auto contact-info">
+                <p><span class="d-block">Address:</span> <span class="text-black"> 98 West 21th Street, Suite 721 New York NY 10016</span></p>
+                <p><span class="d-block">Phone:</span> <span class="text-black"> (+1) 435 3533</span></p>
+                <p><span class="d-block">Email:</span> <span class="text-black"> info@yourdomain.com</span></p>
               </div>
             </div>
-            <!-- END slider -->
           </div>
-        
         </div>
       </div>
     </section>
-    <!-- END section -->
-    
-        
-    <!-- END section -->
-    <section class="section testimonial-section">
+
+    <section class="section testimonial-section bg-light">
       <div class="container">
         <div class="row justify-content-center text-center mb-5">
           <div class="col-md-7">
@@ -353,8 +270,8 @@
 
       </div>
     </section>
-    
 
+    
     
     <section class="section bg-image overlay" style="background-image: url('images/hero_4.jpg');">
         <div class="container" >

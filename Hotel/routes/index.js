@@ -205,7 +205,7 @@ router.post('/register', function(req, res) {
 });
 
 router.get('/login', function(req, res) {
-    res.render('login', { user : req.user });
+    res.render('login', { });
     //res.redirect('/');
 });
 
@@ -216,6 +216,12 @@ router.post('/login', passport.authenticate('local'), function(req, res) {
 router.get('/logout', function(req, res) {
     req.logout();
     res.redirect('/');
+});
+
+router.get('/reservation', function(req, res){
+    var username = false;
+    if (req.user) username = req.user.username;
+    res.render('reservation', {username: username});
 });
 
 module.exports = router;
