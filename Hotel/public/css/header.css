@@ -5,6 +5,7 @@
 
 .username-display a{
     color: #fff !important;
+    margin-right: 10px;
 } 
 .site-header.scrolled .username-display a {
     color: #000 !important; 
