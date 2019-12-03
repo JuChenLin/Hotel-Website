@@ -245,5 +245,23 @@ router.get('/contact', function(req, res){
     res.render('contact', { username : username });
 });
 
+router.post('/reservation', function(req, res){
+   
+    if(req.user) {
+    }
+    else{
+        var collection = db.get('tmp_reservation');
+        collection.insert({
+            name: req.body.title,
+            email: req.body.genre,
+            checkin_date: req.body.image,
+            chekcout_date: req.body.description
+        }, function(err, video) {
+            if (err) throw err;
+            res.redirect('/videos');
+        });
+
+    }
+});
 
 module.exports = router;
