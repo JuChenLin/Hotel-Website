@@ -1,0 +1,111 @@
+//// https://dbdiagram.io/home
+
+//// -- LEVEL 1
+//// -- Tables and References
+
+// Creating tables
+
+
+
+table hotel {
+    hotel_id                varchar [pk]
+    hotel_name              varchar
+    hotel_instruction       varchar
+    hotel_photo_address     varchar
+    address_street_number   varchar
+    address_city            varchar
+    address_state_province  varchar
+    address_country         varchar
+    zipcode                 varchar
+    star_rating             float
+    contact_name            varchar
+    contact_phone           varchar
+    contact_email           varchar
+}
+
+table amenities {
+  amenity_id  int [pk]
+  amenity varchar
+}
+
+table hotel_amenities {
+    hotel_id varchar [pk]
+    amenity_id int [pk]
+}
+
+
+
+table room_type {
+    room_id int [pk]
+    room_feature varchar
+    room_name varchar
+    room_photo_address varchar
+    
+}
+
+table hotel_room {
+    hotel_id  int [pk]
+    room_id int [pk]
+    rooms_avalability boolean
+    num int
+    room_price int
+}
+
+
+table room_not_available_date {
+    hotel_id  int [pk]
+    room_id varchar [pk]
+    not_available_date date [pk]
+    num int
+}
+
+
+table bed {
+    bed_type varchar [pk]
+    capacity int
+    bed_photo_address varchar(100)
+}
+
+table room_bed {
+    room_id int [pk]
+    hotel_id varchar [pk]
+    number_of_beds int
+    bed_type varchar(20) [pk]
+}
+
+
+
+table photo {
+  photo_id int [pk]
+  photo_address varchar
+}
+
+table room_photo {
+    room_id int [ref: > room_type.room_id]
+    photo_id int [ref: > photo.photo_id]
+}
+
+table hotel_photo {
+    hotel_id int [ref: > hotel.hotel_id]
+    photo_id int [ref: > photo.photo_id]
+}
+
+table bed_photo {
+    bed_type varchar(20) [ref: > bed.bed_type]
+    photo_id int [ref: > photo.photo_id]
+}
+
+ref: hotel_amenities.hotel_id > hotel.hotel_id
+ref: hotel_amenities.amenity_id > amenities.amenity_id
+ref: hotel_room.hotel_id > hotel.hotel_id
+ref: hotel_room.room_id > room_type.room_id
+ref: room_not_available_date.hotel_id > hotel.hotel_id
+ref: room_not_available_date.room_id > room_type.room_id
+ref: room_bed.hotel_id > hotel.hotel_id
+ref: room_bed.room_id > room_type.room_id
+ref: room_bed.bed_type > bed.bed_type
+
+
+
+
+
