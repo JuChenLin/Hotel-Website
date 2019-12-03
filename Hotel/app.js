@@ -10,8 +10,6 @@ var passport = require('passport');
 var LocalStrategy = require('passport-local').Strategy;
 
 var indexRouter = require('./routes/index');
-var usersRouter = require('./routes/users');
-var videosRouter = require('./routes/videos');
 //require('./routes/auth')(app);
 
 var session = require('express-session');
@@ -38,8 +36,6 @@ app.use(passport.initialize());
 app.use(passport.session());
 
 app.use('/', indexRouter);
-app.use('/users', usersRouter);
-app.use('/api/videos', videosRouter);
 
 //app.use(app.router);
 
