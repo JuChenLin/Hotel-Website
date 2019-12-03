@@ -246,7 +246,7 @@ router.get('/contact', function(req, res){
 });
 
 router.get('/new', function(req, res) {
-    res.render('newroom', { });
+    res.render('addRoom', { });
     //res.redirect('/');
 });
 
