@@ -277,6 +277,22 @@ router.post('/reservation', function(req, res){
     }
 });
 
+router.get('/addrooms', function(req, res){
+    if(req.user) {
+        if (req.user.role) {
+            add_new_room(req);
+
+
+        } 
+        else {
+            res.redirect('/rooms');
+        }
+    } 
+    else {
+        res.redirect('/rooms');
+    }
+});
+
 module.exports = router;
 
 function search_available_rooms(req){
@@ -286,5 +302,15 @@ function search_available_rooms(req){
         con.query(sql, function (err, result) {
             if (err) throw err;
         });
+    }); 
+}
+
+function add_new_room(req){
+    con.connect(function(err) {
+        if (err) throw err;
+        con.query("INSERT INTO room_type SET ?", {room_feature: req.body.room_feature, room_name: req.body.room_name}, function (err, result) {
+            if (err) throw err;
+        });
+        con.query("")
     }); 
 }
