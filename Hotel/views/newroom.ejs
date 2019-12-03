@@ -19,10 +19,7 @@
 
 		<div class="wrapper" style="background-image: url('images/bg-registration-form-1.jpg');">
 			<div class="inner" style="width:100%">
-				<div class="image-holder">
-					<img src="images/registration-form-1.jpg" alt="">
-				</div>
-                <form method="POST" action="/addrooms" enctype="multipart/form-data">
+				<form method="POST" action="/addrooms" enctype="multipart/form-data">
 					<h3>Add New Room</h3>
 					<div class="form-wrapper">
 						<input type="text" name="room_name" placeholder="Room Name" class="form-control" required>
@@ -36,6 +33,7 @@
 					<div class="form-wrapper">
                         <input type="file" name="upload" multiple accept="image/*">
 					</div>
+                    <br>
 
 					<div class="form-group">
 						<input type="number" name="total_num" placeholder="Number of Room" class="form-control" required>

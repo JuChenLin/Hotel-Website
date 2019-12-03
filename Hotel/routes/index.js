@@ -290,13 +290,9 @@ router.post('/reservation', function(req, res){
 });
 
 router.get('/addrooms', function(req, res){
-    res.render('newroom', {});
-    /*
     if(req.user) {
         if (req.user.role) {
-            //add_new_room(req);
-
-
+            res.render('newroom', {});
         } 
         else {
             res.redirect('/rooms');
@@ -305,85 +301,28 @@ router.get('/addrooms', function(req, res){
     else {
         res.redirect('/rooms');
     }
-    */
 });
-
-router.post('/addrooms', async function(req, res){
-    dict = {};
-    files = [];
-    add_room_photo(req);
-    res.redirect('/rooms');
-
-    /*
-    if(req.user) {
-        if (req.user.role) {
-            var result = add_new_room(req);
-            res.redirect('/rooms');
-
-        } 
-        else {
-            res.redirect('/rooms');
-        }
-    } 
-    else {
-        res.redirect('/rooms');
-    }
-    */
-});
-
-/*
-router.get('/upload', function(req, res) {
-   res.render('upload', {}); 
-});
-
-router.post('/upload', function(req, res){
-    var id = 1;
-    var dict = {};
-    var files = [];
-    new formidable.IncomingForm().parse(req)
-    .on('field', (name, field) => {
-        console.log('Field', name, field)
-        dict[name] = field
-    })
-    .on('fileBegin', (name, file) => {
-        file.path = process.cwd() + '/public/room_photo/' + dict.room_name + "-" + id;
-        id++;
-        files.push(file.name);
-        console.log(file.name);
-        console.log('Uploaded file', name, file)
-    })
-    .on('aborted', () => {
-        console.error('Request aborted by the user')
-    })
-    .on('error', (err) => {
-        console.error('Error', err)
-        throw err
-    })
-
-router.get('/new', function(req, res) {
-    res.render('addRoom', { });
-    //res.redirect('/');
-});
-
-router.get('/edit', function(req, res) {
-    res.render('edit', { });
-    //res.redirect('/');
-});
-*/
-
-
-function search_available_rooms(req){
-    con.connect(function(err) {
-        if (err) throw err;
-        sql = "";
-        con.query(sql, function (err, result) {
-            if (err) throw err;
-        });
-    }); 
-}
 
 var dict;
 var files;
+
+router.post('/addrooms', async function(req, res){
+    if(req.user) {
+        if (req.user.role) {
+            dict = {};
+            files = [];
+            add_room_photo(req);
+            res.redirect('/rooms');
+        } 
+        else {
+            res.redirect('/rooms');
+        }
+    } 
+    else {
+        res.redirect('/rooms');
+    }
+});
+
 
 function add_room_photo(req){
 
@@ -552,58 +491,8 @@ async function add_new_room() {
             console.log('Transaction Complete.');
             mysql_db.end();
         });
-        
-        /*
-
-        con.query("INSERT INTO hotel_room SET ?", {hotel_id: "ho000001", room_id: room_id, total_num: dict.total_num, room_price: dict.room_price }, function (err, result) {
-                if (err) {
-                    throw err;
-                    con.rollback(function() {
-                        throw err;
-                        return false;
-                    });
-                }
-        });
-
-        con.query("INSERT INTO room_bed SET ?", {room_id: room_id, bed_type: dict.bed_type1, number_of_beds: dict.number_of_beds1 }, function (err, result) {
-                if (err) {
-                    throw err;
-                    con.rollback(function() {
-                        throw err;
-                        return false;
-                    });
-                }
-        });
-        
-        
-        con.query("INSERT INTO room_bed SET ?", {room_id: room_id, bed_type: dict.bed_type2, number_of_beds: dict.number_of_beds2 }, function (err, result) {
-                if (err) {
-                    throw err;
-                    con.rollback(function() {
-                        throw err;
-                        return false;
-                    });
-                }
-        });
-
-        con.query("INSERT INTO room_bed SET ?", {room_id: room_id, bed_type: dict.bed_type3, number_of_beds: dict.number_of_beds3 }, function (err, result) {
-                if (err) {
-                    throw err;
-                    con.rollback(function() {
-                        throw err;
-                        return false;
-                    });
-                }
-        });
-        */
-        
-
-        
     });
-    
 }
 
-function add_photo(value, index, array) {
-}
 
 module.exports = router;
