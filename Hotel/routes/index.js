@@ -1,13 +1,13 @@
 var express = require('express');
 var router = express.Router();
 var monk = require('monk');
-var db = monk('localhost:27017/Vidzy');
+var db = monk('localhost:27017/Hotel');
 
 var bodyParser = require('body-parser')
 var methodOverride = require('method-override');
 
 var passport = require('passport');
-var Account = require('../models/accounts');
+var Customer = require('../models/customers');
 
 router.use(bodyParser.urlencoded({ extended: false }));
 router.use(methodOverride(function(req, res){
@@ -19,6 +19,7 @@ router.use(methodOverride(function(req, res){
   }
 }));
 
+/*
 router.get('/', function(req, res) {
     res.redirect('/videos');
 });
@@ -167,18 +168,31 @@ router.delete('/videos/:id', function(req, res) {
         res.render('noprivilege');
     }
 });
+*/
 
 // /* GET home page. */
 // router.get('/', function(req, res, next) {
 //   res.render('index', { title: 'Express' });
 // });
+ 
+router.get('/', function(req, res) {
+    res.redirect('/index');
+});
+
+router.get('/index', function(req, res){
+    var username = false;
+    if (req.user) username = req.user.username;
+    console.log(username);
+    res.render('index', { username : username });
+});
 
 router.get('/register', function(req, res) {
-    res.render('register', { });
+       res.render('register', { });
 });
 
 router.post('/register', function(req, res) {
-    Account.register(new Account({ username : req.body.username, role : req.body.role }), 
+    Customer.register(new Customer({ fname: req.body.fname, lname: req.body.lname, gender: req.body.gender,
+        username : req.body.username, email: req.body.email, role : false }), 
         req.body.password, function(err, account) {
         if (err) {
             return res.render('register', { account : account });

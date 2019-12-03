@@ -1,0 +1,11 @@
+.flex {
+    display: flex;
+    align-items:  center;
+}
+
+.username-display a{
+    color: #fff !important;
+} 
+.site-header.scrolled .username-display a {
+    color: #000 !important; 
+}

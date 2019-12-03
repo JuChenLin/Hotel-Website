@@ -60,10 +60,10 @@ app.use(function(err, req, res, next) {
 });
 
 // passport config
-var Account = require('./models/accounts');
-passport.use(new LocalStrategy(Account.authenticate()));
-passport.serializeUser(Account.serializeUser());
-passport.deserializeUser(Account.deserializeUser());
+var Customer = require('./models/customers.js');
+passport.use(new LocalStrategy(Customer.authenticate()));
+passport.serializeUser(Customer.serializeUser());
+passport.deserializeUser(Customer.deserializeUser());
 
 // mongoose
 mongoose.connect('mongodb://localhost:27017/passport_local_mongoose');
