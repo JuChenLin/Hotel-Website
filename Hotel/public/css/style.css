@@ -718,10 +718,21 @@ textarea.form-control {
 
 .contact-section .contact-info p {
   font-family: "Playfair Display", times, serif;
-  font-size: 20px;
+  font-size: 30px;
   margin-bottom: 30px; }
   .contact-section .contact-info p .d-block {
     font-size: 14px;
+    letter-spacing: .2em;
+    font-weight: bold;
+    font-family: "Roboto", arial, sans-serif;
+    text-transform: uppercase; }
+
+.contact-section .information p {
+  font-family: "Playfair Display", times, serif;
+  font-size: 20px;
+  margin-bottom: 30px; }
+  .contact-section .information p .d-block {
+    font-size: 16px;
     letter-spacing: .2em;
     font-weight: bold;
     font-family: "Roboto", arial, sans-serif;

@@ -23,6 +23,7 @@
 
     <!-- Theme Style -->
     <link rel="stylesheet" href="css/style.css">
+    <link rel="stylesheet" href="css/result.css">
   </head>
   <body>
     <%- include partials/header.ejs %>   
@@ -107,12 +108,36 @@
 
     <!-- yuantai -->
     <section class="py-5 bg-light">
-      <div class="container">
+      <div class="container" style="text-align:center;">
         <div class="form-wrapper" style="text-align:center;">
           <button id="all" class="btn btn-primary btn-block text-white" disabled="">Show All Rooms</button>
           <button id="only" class="btn btn-primary btn-block text-white">Show Only Available</button>
         </div>
         <br/>
+
+        <div class="search-container">
+            <form action="#" class="form-inline filter">
+              <!-- <div class="form-group" style="vertical-align"> -->
+              <div class="row form-inline" style="height: 80% width: 100%">
+                <div class=" col-md-4 col-lg-4" style="vertical-align">
+                  <select id="bed_type" name="bed_type" style="width: 80px">
+                    <option value="">Bed Type</option>
+                  </select> &nbsp;
+                </div>
+
+                <div class=" col-md-4 col-lg-4" style="vertical-align">
+                  <select id="bed_num" name="bed_num" style="width: 80px">
+                    <option value="">Bed Number</option>
+                  </select> &nbsp;
+                </div>
+                <div class="col-md-2 col-lg-2" style="height: 80%">
+                  <button class="btn btn-outline-secondary" type="submit">Filter</button>
+                </div>
+              </div>
+            </form>
+        </div>
+        <br/>
+
         <div id="ind_no_result" class="" data-aos="fade-up">
             <div class="form-wrapper" style="text-align:center;" data-aos="fade-up">
                 <p id="no_res">No Result ...</p>
@@ -125,188 +150,22 @@
         <div id="aval_rooms" class="row">
             
         </div>
-      </div>
-    </section>
 
-
-    <section class="section">
-      <div class="container">
-        <div class="row justify-content-center text-center mb-5">
-          <div class="col-md-7">
-            <h2 class="heading" data-aos="fade-up">Rooms &amp; Suites</h2>
-            <p data-aos="fade-up" data-aos-delay="100">Far far away, behind the word mountains, far from the countries Vokalia and Consonantia, there live the blind texts. Separated they live in Bookmarksgrove right at the coast of the Semantics, a large language ocean.</p>
-          </div>
-        </div>
-        <div class="row">
-          <div class="col-md-6 col-lg-4" data-aos="fade-up">
-            <a href="#" class="room">
-              <figure class="img-wrap">
-                <img src="images/img_1.jpg" alt="Free website template" class="img-fluid mb-3">
-              </figure>
-              <div class="p-3 text-center room-info">
-                <h2>Single Room</h2>
-                <span class="text-uppercase letter-spacing-1">90$ / per night</span>
-              </div>
-            </a>
-          </div>
-
-          <div class="col-md-6 col-lg-4" data-aos="fade-up">
-            <a href="#" class="room">
-              <figure class="img-wrap">
-                <img src="images/img_2.jpg" alt="Free website template" class="img-fluid mb-3">
-              </figure>
-              <div class="p-3 text-center room-info">
-                <h2>Family Room</h2>
-                <span class="text-uppercase letter-spacing-1">120$ / per night</span>
-              </div>
-            </a>
-          </div>
-
-          <div class="col-md-6 col-lg-4" data-aos="fade-up">
-            <a href="#" class="room">
-              <figure class="img-wrap">
-                <img src="images/img_3.jpg" alt="Free website template" class="img-fluid mb-3">
-              </figure>
-              <div class="p-3 text-center room-info">
-                <h2>Presidential Room</h2>
-                <span class="text-uppercase letter-spacing-1">250$ / per night</span>
-              </div>
-            </a>
+        <div style="text-align:center;">
+          <div class="pagination"　>
+            <a href="#">&laquo;</a>
+            <a href="#">1</a>
+            <a class="active" href="#">2</a>
+            <a href="#">3</a>
+            <a href="#">4</a>
+            <a href="#">5</a>
+            <a href="#">6</a>
+            <a href="#">&raquo;</a>
           </div>
         </div>
       </div>
     </section>
-    
-    
-    <section class="section slider-section bg-light">
-      <div class="container">
-        <div class="row justify-content-center text-center mb-5">
-          <div class="col-md-7">
-            <h2 class="heading" data-aos="fade-up">Photos</h2>
-            <p data-aos="fade-up" data-aos-delay="100">Far far away, behind the word mountains, far from the countries Vokalia and Consonantia, there live the blind texts. Separated they live in Bookmarksgrove right at the coast of the Semantics, a large language ocean.</p>
-          </div>
-        </div>
-        <div class="row">
-          <div class="col-md-12">
-            <div class="home-slider major-caousel owl-carousel mb-5" data-aos="fade-up" data-aos-delay="200">
-              <div class="slider-item">
-                <a href="images/slider-1.jpg" data-fancybox="images" data-caption="Caption for this image"><img src="images/slider-1.jpg" alt="Image placeholder" class="img-fluid"></a>
-              </div>
-              <div class="slider-item">
-                <a href="images/slider-2.jpg" data-fancybox="images" data-caption="Caption for this image"><img src="images/slider-2.jpg" alt="Image placeholder" class="img-fluid"></a>
-              </div>
-              <div class="slider-item">
-                <a href="images/slider-3.jpg" data-fancybox="images" data-caption="Caption for this image"><img src="images/slider-3.jpg" alt="Image placeholder" class="img-fluid"></a>
-              </div>
-              <div class="slider-item">
-                <a href="images/slider-4.jpg" data-fancybox="images" data-caption="Caption for this image"><img src="images/slider-4.jpg" alt="Image placeholder" class="img-fluid"></a>
-              </div>
-              <div class="slider-item">
-                <a href="images/slider-5.jpg" data-fancybox="images" data-caption="Caption for this image"><img src="images/slider-5.jpg" alt="Image placeholder" class="img-fluid"></a>
-              </div>
-              <div class="slider-item">
-                <a href="images/slider-6.jpg" data-fancybox="images" data-caption="Caption for this image"><img src="images/slider-6.jpg" alt="Image placeholder" class="img-fluid"></a>
-              </div>
-              <div class="slider-item">
-                <a href="images/slider-7.jpg" data-fancybox="images" data-caption="Caption for this image"><img src="images/slider-7.jpg" alt="Image placeholder" class="img-fluid"></a>
-              </div>
-            </div>
-            <!-- END slider -->
-          </div>
-        
-        </div>
-      </div>
-    </section>
-    <!-- END section -->
-    
-        
-    <!-- END section -->
-    <section class="section testimonial-section">
-      <div class="container">
-        <div class="row justify-content-center text-center mb-5">
-          <div class="col-md-7">
-            <h2 class="heading" data-aos="fade-up">People Says</h2>
-          </div>
-        </div>
-        <div class="row">
-          <div class="js-carousel-2 owl-carousel mb-5" data-aos="fade-up" data-aos-delay="200">
-            
-            <div class="testimonial text-center slider-item">
-              <div class="author-image mb-3">
-                <img src="images/person_1.jpg" alt="Image placeholder" class="rounded-circle mx-auto">
-              </div>
-              <blockquote>
-
-                <p>&ldquo;A small river named Duden flows by their place and supplies it with the necessary regelialia. It is a paradisematic country, in which roasted parts of sentences fly into your mouth.&rdquo;</p>
-              </blockquote>
-              <p><em>&mdash; Jean Smith</em></p>
-            </div> 
-
-            <div class="testimonial text-center slider-item">
-              <div class="author-image mb-3">
-                <img src="images/person_2.jpg" alt="Image placeholder" class="rounded-circle mx-auto">
-              </div>
-              <blockquote>
-                <p>&ldquo;Even the all-powerful Pointing has no control about the blind texts it is an almost unorthographic life One day however a small line of blind text by the name of Lorem Ipsum decided to leave for the far World of Grammar.&rdquo;</p>
-              </blockquote>
-              <p><em>&mdash; John Doe</em></p>
-            </div>
-
-            <div class="testimonial text-center slider-item">
-              <div class="author-image mb-3">
-                <img src="images/person_3.jpg" alt="Image placeholder" class="rounded-circle mx-auto">
-              </div>
-              <blockquote>
-
-                <p>&ldquo;When she reached the first hills of the Italic Mountains, she had a last view back on the skyline of her hometown Bookmarksgrove, the headline of Alphabet Village and the subline of her own road, the Line Lane.&rdquo;</p>
-              </blockquote>
-              <p><em>&mdash; John Doe</em></p>
-            </div>
-
-
-            <div class="testimonial text-center slider-item">
-              <div class="author-image mb-3">
-                <img src="images/person_1.jpg" alt="Image placeholder" class="rounded-circle mx-auto">
-              </div>
-              <blockquote>
-
-                <p>&ldquo;A small river named Duden flows by their place and supplies it with the necessary regelialia. It is a paradisematic country, in which roasted parts of sentences fly into your mouth.&rdquo;</p>
-              </blockquote>
-              <p><em>&mdash; Jean Smith</em></p>
-            </div> 
-
-            <div class="testimonial text-center slider-item">
-              <div class="author-image mb-3">
-                <img src="images/person_2.jpg" alt="Image placeholder" class="rounded-circle mx-auto">
-              </div>
-              <blockquote>
-                <p>&ldquo;Even the all-powerful Pointing has no control about the blind texts it is an almost unorthographic life One day however a small line of blind text by the name of Lorem Ipsum decided to leave for the far World of Grammar.&rdquo;</p>
-              </blockquote>
-              <p><em>&mdash; John Doe</em></p>
-            </div>
-
-            <div class="testimonial text-center slider-item">
-              <div class="author-image mb-3">
-                <img src="images/person_3.jpg" alt="Image placeholder" class="rounded-circle mx-auto">
-              </div>
-              <blockquote>
-
-                <p>&ldquo;When she reached the first hills of the Italic Mountains, she had a last view back on the skyline of her hometown Bookmarksgrove, the headline of Alphabet Village and the subline of her own road, the Line Lane.&rdquo;</p>
-              </blockquote>
-              <p><em>&mdash; John Doe</em></p>
-            </div>
-
-          </div>
-            <!-- END slider -->
-        </div>
-
-      </div>
-    </section>
-
-
-
-
-
+  
     
     <section class="section bg-image overlay" style="background-image: url('images/hero_4.jpg');">
         <div class="container" >
