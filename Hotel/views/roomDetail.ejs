@@ -3,7 +3,7 @@
   <head>
     <meta charset="utf-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
-    <title>Sogo Hotel by Colorlib.com</title>
+    <title>View our room</title>
     <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
     <meta name="description" content="" />
     <meta name="keywords" content="" />
@@ -115,20 +115,7 @@
     <!-- Search Bar section -->
 
     
-    <section class="section">
-      <div class="container">
         
-          <h2> <%= details.room_name %> </h2>
-        <div class="row">
-        <% for(var i=0; i < photos.length; i++) { %>
-          <div>
-              <img src="<%= photos[i].photo_address %>" alt="Free website template" class="img-fluid">
-          </div>
-        <% } %>
-        </div>
-      </div>
-    </section>
-    
     <!-- <section class="section bg-light">
 
       <div class="container">
@@ -145,19 +132,25 @@
 
     <section class="section bg-light">
       <div class="container">
+          
         <div class="row justify-content-center mb-5">
           <div class="col-md-7">
             <h6 class="heading" data-aos="fade">Information</h6>
-            
             <table class="table table-bordered">
               <thead>
-                <tr>
-                  <th scope="col">Room Type</th>
-                </tr>
               </thead>
               <tbody>
                 <tr>
-                  <td>Mark</td>
+                  <th scope="col">Room Type</th>
+                  <td><%= details.room_name %></td>
+                </tr>
+                <tr>
+                  <th scope="col">Feature</th>
+                  <td><%= details.room_feature %></td>
+                </tr>
+                <tr>
+                  <th scope="col">Price</th>
+                  <td><%= details.room_price %></td>
                 </tr>
               </tbody>
             </table>
@@ -165,15 +158,31 @@
             <table class="table table-bordered">
               <thead>
                 <tr>
-                  <th scope="col">Feature</th>
+                  <th scope="col">Bed Type</th>
+                  <th scope="col">Quantity</th>
                 </tr>
               </thead>
               <tbody>
-                <tr>
-                  <td>Mark</td>
-                </tr>
+                  <% for(var i=0; i < beds.length; i++) { %>
+                    <tr>
+                        <td><%= beds[i].bed_type%></td>
+                        <td><%= beds[i].number_of_beds%></td>
+                    </tr>
+                  <% } %>
               </tbody>
             </table>
+            
+            <% if (userrole) { %>
+            <div class="form-wrapper" style="text-align:center;">
+                <a class="btn btn-secondary" href="/edit/<%= details.room_id %>" role="button"> Edit </a>
+                <a class="btn btn-danger" href="#" role="button"> Delete </a>
+            </div>
+            <% } %>
+            
+            <% if(details.rooms_availability == false) { %>
+                <h6 data-aos="fade">Currently unavailable</h6>
+            <% } %>
+
 
             <p id="reminder" data-aos="fade">(if avaibla # left < 3 ->) "There is only # left, book one RIGHT NOW!"</p>
           </div>
@@ -181,6 +190,19 @@
       </div>
     </section>
 
+    <section class="section">
+      <div class="container">
+        
+        <h2> <%= details.room_name %> </h2>
+        <div class="row">
+        <% for(var i=0; i < photos.length; i++) { %>
+          <div>
+              <img src="<%= photos[i].photo_address %>" alt="Free website template" class="img-fluid">
+          </div>
+        <% } %>
+        </div>
+      </div>
+    </section>
 
 
     <section class="section bg-image overlay" style="background-image: url('images/hero_4.jpg');">
