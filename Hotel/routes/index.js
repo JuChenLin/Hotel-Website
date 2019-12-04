@@ -30,161 +30,6 @@ router.use(methodOverride(function(req, res){
   }
 }));
 
-/*
-router.get('/', function(req, res) {
-    res.redirect('/videos');
-});
-
-router.get('/videos', function(req, res) {
-    var collection = db.get('videos');
-    var title = req.query.title;
-    var genre = req.query.genre;
-    var promise = collection.distinct('genre');
-    var username = false;
-    if (req.user) username = req.user.username;
-    console.log(username);
-    promise.then(function(genres){
-        if ((title)  && (genre)) {
-            collection.find({title: {'$regex': title, '$options': 'i'}, genre: genre}, function(err, videos){
-                if (err) throw err;
-  	            //res.json(videos);
-                //console.log(username);
-  	            res.render('index', {title: 'Vidzy', videos: videos, genres: genres, username: username });
-  	            //res.render('index', {title: 'Vidzy', videos: videos, genres: genres, username: username });
-            });
-
-        }
-        else if(title) {
-            collection.find({title: {'$regex': title, '$options': 'i'}}, function(err, videos){
-                if (err) throw err;
-  	            //res.json(videos);
-  	            res.render('index', {title: 'Vidzy', videos: videos, genres: genres, username: username});
-            });
-        }
-        else if(genre) {
-            collection.find({genre: genre}, function(err, videos){
-                if (err) throw err;
-  	            //res.json(videos);
-  	            res.render('index', {title: 'Vidzy', videos: videos, genres: genres, username: username});
-            });
-
-        }
-        else {
-            collection.find({}, function(err, videos){
-                if (err) throw err;
-  	            //res.json(videos);
-  	            res.render('index', {title: 'Vidzy', videos: videos, genres: genres, username: username});
-            });
-        }
-    });
-});
-
-
-router.get('/videos/new', function(req, res) {
-    if (req.user) {
-        if (req.user.role == true)
-            res.render('new');
-    }
-    res.render('noprivilege');
-});
-
-router.get('/videos/:id', function(req, res) {
-    var collection = db.get('videos');
-    collection.findOne({ _id: req.params.id}, function(err, video){
-        if (err) throw err;
-      	//res.json(video);
-      	res.render('show', {video: video})
-    });
-});
-
-router.post('/videos', function(req, res) {
-    if (req.user) {
-        if (req.user.role == true) {
-	        var collection = db.get('videos');
-	        collection.insert({
-		        title: req.body.title,
-		        genre: req.body.genre,
-		        image: req.body.image,
-		        description: req.body.description
-	        }, function(err, video) {
-		        if (err) throw err;
-		        res.redirect('/videos');
-	        });
-        }
-        else {
-            res.render('noprivilege');
-        }
-    }
-    else {
-        res.render('noprivilege');
-    }
-});
-
-router.get('/videos/:id/edit', function(req, res) {
-    if (req.user) {
-        if (req.user.role == true) {
-            var collection = db.get('videos');
-            collection.findOne({ _id: req.params.id}, function(err, video){
-                if (err) throw err;
-                res.render('edit', {video: video})
-            });
-        }
-        else {
-            res.render('noprivilege');
-        }
-    }
-    else {
-        res.render('noprivilege');
-    }
-});
-
-router.put('/videos/:id', function(req, res) {
-    if (req.user) {
-        if (req.user.role == true) {
-            var collection = db.get('videos');
-            collection.findOneAndUpdate({ _id: req.params.id}, {
-                $set: { 
-                    title: req.body.title,
-                    genre: req.body.genre,
-                    image: req.body.image,
-                    description: req.body.description,
-                }
-            }).then((updateDoc) => {});
-            res.redirect('/videos');
-        }
-        else {
-            res.render('noprivilege');
-        }
-    }
-    else {
-        res.render('noprivilege');
-    }
-});
-
-// delete route -for now
-router.delete('/videos/:id', function(req, res) {
-    if (req.user) {
-        if (req.user.role == true) {
-            var collection = db.get('videos');
-            collection.remove({ _id: req.params.id }, function(err, video){
-                if (err) throw err;
-                res.redirect('/');
-            });
-        }
-        else {
-            res.render('noprivilege');
-        }
-    }
-    else {
-        res.render('noprivilege');
-    }
-});
-*/
-
-// /* GET home page. */
-// router.get('/', function(req, res, next) {
-//   res.render('index', { title: 'Express' });
-// });
  
 router.get('/', function(req, res) {
     res.redirect('/index');
@@ -304,14 +149,16 @@ router.post('/reservation', function(req, res){
     }
 });
 
-/*
-router.get('/edit', function(req, res) {
-     var username = false;
+router.get('/edit/:roomid', async function(req, res) {
+    var username = false;
     if (req.user) username = req.user.username;
-    console.log(username);
-    res.render('edit', { username : username });
-    //res.redirect('/');
-*/
+    //console.log(username);
+    var details = await getroomdetailbyid(req.params.roomid);
+    var beds = await getbedsbyroomid(req.params.roomid);
+    //var beds = false;
+    var photos = await getphotosbyroomid(req.params.roomid);
+    res.render('edit', { username : username, details: details, beds: beds, photos: photos});
+});
 
 router.get('/addrooms', function(req, res){
     if(req.user) {
@@ -386,6 +233,7 @@ async function add_new_room() {
     console.log(dict);
     console.log("con sql");
 
+    /*
     mysql_db.connect(function(err) {
         if (err) {
             console.error('error connecting: ' + err.stack);
@@ -393,7 +241,7 @@ async function add_new_room() {
         }
         console.log('connected as id ' + mysql_db.threadId);
     });
-
+    */
 
     mysql_db.beginTransaction(async function(err) {
         console.log('beginTransaction');
@@ -519,17 +367,23 @@ async function add_new_room() {
 }
 
 async function list_room() {
+
+    /*
+    sql = "select * from (select room_id as id, total_num as num, room_price as price from hotel_room as hr where rooms_availability = true ) as t1 left join (select * from room_type) as t2 on t1.id = t2.room_id left JOIN (select room_id, MIN(photo_id) from room_photo group by room_id) as t3 on t1.id = t3.room_id";
+    */
+
     sql = "select  hotel_room.room_id, hotel_room.room_price, room_type.room_name, photo.photo_address,  photo.photo_id from hotel_room left join (room_type) ON ( hotel_room.room_id = room_type.room_id) left join (room_photo) ON (room_photo.room_id = hotel_room.room_id) left join (photo) ON (photo.photo_id = room_photo.photo_id);";
 
     var arr;
 
-    let lock = new Promise((resolve, reject) => { mysql_db.connect(function(err) {
+    /*let lock = new Promise((resolve, reject) => { mysql_db.connect(function(err) {
         if (err) {
             console.error('error connecting: ' + err.stack);
             //return false;
         }
         console.log('connected as id ' + mysql_db.threadId);
-        mysql_db.query(sql, function (err, result, fields) {
+    */
+    let lock = new Promise((resolve, reject) => { mysql_db.query(sql, function (err, result, fields) {
             if (err) {
                 throw err;
                 mysql_db.rollback(function() {
@@ -537,6 +391,7 @@ async function list_room() {
                     return;
                 });
             }
+            console.log(result);
             var i;
             arr = [];
             var indexs = [];
@@ -553,9 +408,9 @@ async function list_room() {
                     indexs.push(dict.room_id);
                 }
             }
+            console.log(arr);
             resolve();
         });
-    });
     });
     let unlock = await lock;
     return arr;
@@ -566,12 +421,15 @@ async function getroomdetailbyid(id) {
     
     var dic = {};
 
-    let lock = new Promise((resolve, reject) => { mysql_db.connect(function(err) {
+    let lock = new Promise((resolve, reject) => { 
+        /*
+        mysql_db.connect(function(err) {
         if (err) {
             console.error('error connecting: ' + err.stack);
             //return false;
         }
         console.log('connected as id ' + mysql_db.threadId);
+        */
         mysql_db.query(sql, [id], function (err, result, fields) {
             if (err) {
                 throw err;
@@ -591,7 +449,7 @@ async function getroomdetailbyid(id) {
             dic.room_feature = result[0].room_feature;
             resolve();
         });
-    });
+    //});
     });
     let unlock = await lock;
     console.log(dic);
@@ -603,13 +461,15 @@ async function getbedsbyroomid(id){
 
     var arr;
 
-    let lock = new Promise((resolve, reject) => { mysql_db.connect(function(err) {
+    let lock = new Promise((resolve, reject) => { 
+        /*
+        mysql_db.connect(function(err) {
         if (err) {
             console.error('error connecting: ' + err.stack);
             //return false;
         }
         console.log('connected as id ' + mysql_db.threadId);
-
+        */
         mysql_db.query(sql, [id], function (err, result, fields) {
             if (err) {
                 throw err;
@@ -631,7 +491,7 @@ async function getbedsbyroomid(id){
             resolve();
             console.log(arr);
         });
-    });
+    //});
     });
     let unlock = await lock;
     return arr;
@@ -642,12 +502,15 @@ async function getphotosbyroomid(id) {
     var sql = "select photo.photo_id, photo.photo_address  from photo, room_photo where room_photo.photo_id = photo.photo_id and room_photo.room_id = ?;";
     var arr;
 
-    let lock = new Promise((resolve, reject) => { mysql_db.connect(function(err) {
+    let lock = new Promise((resolve, reject) => { 
+        /*
+        mysql_db.connect(function(err) {
         if (err) {
             console.error('error connecting: ' + err.stack);
             //return false;
         }
         console.log('connected as id ' + mysql_db.threadId);
+        */
         mysql_db.query(sql, [id],function (err, result, fields) {
             if (err) {
                 throw err;
@@ -667,9 +530,10 @@ async function getphotosbyroomid(id) {
             resolve();
             console.log(arr);
         });
-    });
+    //});
     });
     let unlock = await lock;
     return arr;
 }
+
 module.exports = router;

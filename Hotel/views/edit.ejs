@@ -24,23 +24,70 @@
                 <form method="POST" action="/register">
 					<h3>Edit Room</h3>
 					<div class="form-wrapper">
-						<input type="text" name="roomID" placeholder="Room ID" class="form-control" required>
+                        <input type="text" name="room_id" placeholder="<%= details.roomID %>" class="form-control" required>
 					</div>
 					<div class="form-wrapper">
-						<input type="text" name="roomName" placeholder="Room Name" class="form-control" required>
+                        <input type="text" name="room_name" placeholder="<%= details.room_name %>" class="form-control" required>
 					</div>
 					<div class="form-group">
-						<input type="text" name="totelNum" placeholder="Number of Room" class="form-control" required>
-						<input type="text" name="roomPrice" placeholder="Room Price" class="form-control" required>
+                        <input type="number" name="total_num" placeholder="<%= details.total_num %>" class="form-control" required>
+                        <input type="number" step=0.01 name="room_price" placeholder="<%= details.room_price %>" class="form-control" required>
 					</div>
+
+                    <% for(var i=0; i < beds.length; i++) { %>
 					<div class="form-group">
-						<input type="text" name="bedType" placeholder="Bed Type" class="form-control" required>
-						<input type="text" name="bedsNum" placeholder="Number of Beds" class="form-control" required>
+                        <% if(i == 0) { %>
+                        <select name="bed_type<% i %>" id="bed_type<% i %>" class="form-control" required>
+                        <% } else { %>
+                        <select name="bed_type<% i %>" id="bed_type<% i %>" class="form-control">
+                        <% } %>
+
+                        <% if("twin bed" == beds[i].bed_type) { %>
+                          <option value="twin bed" selected>twin bed</option>
+                        <% } else { %>
+                          <option value="twin bed">twin bed</option>
+                        <% } %>
+                        <% if("full bed" == beds[i].bed_type) { %>
+                          <option value="full bed" selected>full bed</option>
+                        <% } else { %>
+                          <option value="full bed">full bed</option>
+                        <% } %>
+                        <% if("queen bed" == beds[i].bed_type) { %>
+                          <option value="queen bed" selected>queen bed</option>
+                        <% } else { %>
+                          <option value="queen bed">queen bed</option>
+                        <% } %>
+                        <% if("king bed" == beds[i].bed_type) { %>
+                          <option value="king bed" selected>king bed</option>
+                        <% } else { %>
+                          <option value="king bed">king bed</option>
+                        <% } %>
+                        <% if("ca king bed" == beds[i].bed_type) { %>
+                          <option value="ca king bed" selected>ca king bed</option>
+                        <% } else { %>
+                          <option value="ca king bed">ca king bed</option>
+                        <% } %>
+                        <% if("sofa bed" == beds[i].bed_type) { %>
+                          <option value="sofa bed" selected>sofa bed</option>
+                        <% } else { %>
+                          <option value="sofa bed">sofa bed</option>
+                        <% } %>
+                        </select>
+                        <% if(i == 0) { %>
+                            <input type="number" name="number_of_beds<%= i %>" placeholder="beds[i].number_of_beds" class="form-control" required>
+                        <% } else { %>
+                            <input type="number" name="number_of_beds<%= i %>" placeholder="beds[i].number_of_beds" class="form-control">
+                        <% } %>
 					</div>
-					<div class="form-wrapper">
-						<textarea id="roomFeature" name="roomFeature" class="form-control">Room Feature</textarea>
-					</div>
-					
+                    <% } >
+                    <div class="row">
+                        <% for(var i=0; i < photos.length; i++) { %>
+                        <div>
+                            <img src="<%= photos[i].photo_address %>" alt="Free website template" class="img-fluid">
+                        </div>
+                        <% } %>
+                    </div>
+
                     <button type="submit" id="submit">
 					    Submit
 						<i class="zmdi zmdi-arrow-right"></i>
