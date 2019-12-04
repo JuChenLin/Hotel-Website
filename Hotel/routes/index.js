@@ -135,7 +135,6 @@ router.get('/contact', function(req, res){
 });
 
 router.post('/reservation', function(req, res){
-   
     if(req.user) {
         search_available_rooms(req);
     }
@@ -211,6 +210,13 @@ router.post('/rooms', async function(req, res){
     var result = await search_available_rooms(checkin_date, checkout_date, adults, children);
     // console.log(util.inspect(result, false, null, true ));
     res.json(result);
+});
+
+router.get('/member', function(req, res){
+    var username = false;
+    if (req.user) username = req.user.username;
+    console.log(username);
+    res.render('member', { username : username });
 });
 
 
