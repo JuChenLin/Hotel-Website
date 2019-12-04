@@ -430,7 +430,7 @@ async function list_room() {
 }
 
 async function getroomdetailbyid(id) {
-    var sql = "select hotel_room.room_id, hotel_room.rooms_avalability, hotel_room.total_num, hotel_room.room_price, room_type.room_name, room_type.room_feature from hotel_room, room_type where room_type.room_id = hotel_room.room_id and hotel_room.room_id = ?;";
+    var sql = "select hotel_room.room_id, hotel_room.rooms_availability, hotel_room.total_num, hotel_room.room_price, room_type.room_name, room_type.room_feature from hotel_room, room_type where room_type.room_id = hotel_room.room_id and hotel_room.room_id = ?;";
     
     var dic = {};
 
@@ -455,7 +455,7 @@ async function getroomdetailbyid(id) {
             console.log(result);
 
             dic.room_id = result[0].room_id;
-            dic.rooms_avalability = result[0].rooms_avalability;
+            dic.rooms_availability = result[0].rooms_availability;
             dic.total_num = result[0].total_num;
             dic.room_price = result[0].room_price;
             dic.room_name = result[0].room_name;
