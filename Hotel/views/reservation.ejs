@@ -53,16 +53,15 @@
       <div class="container">
         <div class="row">
           <div class="col-md-7" data-aos="fade-up" data-aos-delay="100">
-            
+            <img id="photo" src="" alt="" class="img-fluid mb-3">
+            <h2 id="h_name"></h2>
+            <p id="feature"></p>
             <form action="/reservation" method="post" class="bg-white p-md-5 p-4 mb-5 border">
+              <input type="text" id="name" class="form-control" required>
               <div class="row">
                 <div class="col-md-6 form-group">
                   <label class="text-black font-weight-bold" for="name">Name</label>
-                  <input type="text" id="name" name="name" class="form-control" required>
-                </div>
-                <div class="col-md-6 form-group">
-                  <label class="text-black font-weight-bold" for="phone">Phone</label>
-                  <input type="text" id="phone" name="phone"  class="form-control" required>
+                  <input type="text" id="user" name="name" class="form-control" required>
                 </div>
               </div>
           
@@ -131,7 +130,7 @@
               <div class="col-md-10 ml-auto contact-info">
                 <p><span class="d-block">Address:</span> <span class="text-black"> 98 West 21th Street, Suite 721 New York NY 10016</span></p>
                 <p><span class="d-block">Phone:</span> <span class="text-black"> (+1) 435 3533</span></p>
-                <p><span class="d-block">Email:</span> <span class="text-black"> info@yourdomain.com</span></p>
+                <p><span class="d-block">Email:</span> <span class="text-black"> manager@superhotel.com</span></p>
               </div>
             </div>
           </div>
@@ -251,7 +250,31 @@
     
     <script src="js/bootstrap-datepicker.js"></script> 
     <script src="js/jquery.timepicker.min.js"></script> 
+    <script type="text/javascript">
+      $(document).ready(function () {
+        var urlParams = new URLSearchParams(window.location.search);
+        var checkin_date = urlParams.get('checkin_date');
+        var checkout_date = urlParams.get('checkout_date');
+        var adults = urlParams.get('adults');
+        var children = urlParams.get('children');
+        var id = urlParams.get('id');
+        var name = urlParams.get('name');
+        var feature = urlParams.get('feature');
+        var price = urlParams.get('price');
+        var pAddress = urlParams.get('pAddress');
 
+        $("#name").val(name).prop( "hidden", true );
+        $("#checkin_date").val(checkin_date).prop( "disabled", true );
+        $("#checkout_date").val(checkout_date).prop( "disabled", true );
+        $("#adults").val(adults).prop( "disabled", true );
+        $("#children").val(children).prop( "disabled", true );
+        $("#user").val('wayne').prop( "disabled", true );
+        $("#h_name").text(name.toUpperCase());
+        $("#photo").attr('src', '/' + pAddress).attr('alt', 'photo of ' + name);
+        $("#feature").text(feature);
+
+      });
+    </script>
     
 
     <script src="js/main.js"></script>
