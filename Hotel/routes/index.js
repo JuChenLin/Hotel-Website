@@ -19,8 +19,6 @@ mysql_db.connect(function(err) {
 });
 var util = require('util');
 
-
-
 var bodyParser = require('body-parser')
 var methodOverride = require('method-override');
 
@@ -29,6 +27,23 @@ var Customer = require('../models/customers');
 
 var formidable = require('formidable');
 var path = require('path');
+
+const month_int = {
+    "January" : 0, 
+    "February" : 1, 
+    "March" : 2, 
+    "April" : 3, 
+    "May" : 4, 
+    "June" : 5,
+    "July" : 6, 
+    "August" : 7, 
+    "September" : 8, 
+    "October" : 9, 
+    "November" : 10, 
+    "December" : 11
+};
+
+
 
 router.use(bodyParser.urlencoded({ extended: false }));
 router.use(methodOverride(function(req, res){
@@ -72,6 +87,14 @@ router.post('/register', function(req, res) {
 router.get('/login', function(req, res) {
     res.render('login', { });
     //res.redirect('/');
+});
+
+router.get('/result', function(req, res) {
+    var username = false;
+    var userrole = false;
+    if (req.user) username = req.user.username;
+    if (req.user) userrole = req.user.role;
+    res.render('result', { username : username, userrole : userrole});
 });
 
 router.post('/login', passport.authenticate('local'), function(req, res) {
@@ -204,14 +227,30 @@ router.post('/addrooms', function(req, res){
 
 router.post('/rooms', async function(req, res){
     // yuantai fu
-    var checkin_date = new Date(2019, 9, 10);
-    var checkout_date = new Date(2019, 9, 14);
+    var cid = req.body.checkin_date;
+    var cod = req.body.checkout_date;
     var adults = req.body.adults;
     var children = req.body.children;
+    var in_split = cid.split(' ');
+    in_split[1] = in_split[1].substring(0, in_split[1].length - 1);
+    var out_split = cod.split(' ');
+    out_split[1] = out_split[1].substring(0, out_split[1].length - 1);
+    var checkin_date = new Date(parseInt(in_split[2]), month_int[in_split[1]], parseInt(in_split[0]));
+    var checkout_date = new Date(parseInt(out_split[2]), month_int[out_split[1]], parseInt(out_split[0]));
+
+    // console.log(checkin_date);
+    // console.log(checkout_date);
+    // console.log(adults);
+    // console.log(children);
+    // var checkin_date = new Date(2019, 9, 10);
+    // var checkout_date = new Date(2019, 9, 14);
+    // var adults = req.body.adults;
+    // var children = req.body.children;
     var result = await search_available_rooms(checkin_date, checkout_date, adults, children);
     // console.log(util.inspect(result, false, null, true ));
     res.json(result);
 });
+
 
 
 function add_room_photo(req){
@@ -797,6 +836,7 @@ async function search_available_rooms(checkin_date, checkout_date, adults, child
         // console.log(cur);
         // console.log(dic[r['room_id']]);
     }
+    console.log(dic);
 
     var aval_rooms = []
 
@@ -820,11 +860,19 @@ async function search_available_rooms(checkin_date, checkout_date, adults, child
     // console.log(aval_rooms);
 
     var room_with_detail;
-    var sql_all_room_type = "select * from room_type";
-    var sql_room_detail = "select * from (" +  sql_room + ') as t1 ' 
-            + 'left join (' + sql_all_room_type + ') as t2 on t1.id = t2.room_id';
-    var sql_room_photo = 'select room_id, MIN(photo_id) as pid from room_photo group by room_id';
-    var sql_final = sql_room_detail + " left join (" + sql_room_photo + ') as t3 on t1.id = t3.room_id'
+    var sql_all_room_type = "select room_id as id, room_feature as feature, room_name as name from room_type";
+    var sql_room_photo = 'select room_id as id, MIN(photo_id) as pid from room_photo group by id';
+    var sql_room_detail = "select t1.id, t1.num, t1.price, t2.feature, t2.name, t3.pid from (" +  
+                sql_room + ') as t1 ' + 
+                ' left join (' + 
+                sql_all_room_type + ') as t2 on t1.id = t2.id' + 
+                " left join (" + 
+                sql_room_photo +') as t3 on t1.id = t3.id';
+    var sql_photo = 'select photo_id as pid, photo_address as pAddress from photo ';
+    var sql_final = 'select r.id, r.num, r.price, r.feature, r.name, p.paddress from (' + 
+                    sql_room_detail + ') as r ' + 
+                    " left join (" + 
+                    sql_photo + ') as p on r.pid = p.pid';
     // console.log(sql_final);
 
     let lock4 = new Promise((resolve, reject) => { 
@@ -835,16 +883,25 @@ async function search_available_rooms(checkin_date, checkout_date, adults, child
         });
     });
     let unlock4 = await lock4;
-    var objs = [];
-    for (var i = 0;i < room_with_detail.length; i++) {
+    
+    // create json file
+    var objs = {};
+    for (var i = 0; i < room_with_detail.length; i++) {
         var e = {};
-        for (var d in room_with_detail[i]) {
+        var room = room_with_detail[i];
+        // console.log(room);
+        for (var d in room) {
+            // console.log('    ' + d);
             e[d] = room_with_detail[i][d];
         }
-        objs.push(e);
+        objs[room['id']] = e;
     }
     // console.log(aval_rooms);
     // console.log(room_with_detail);
+    // console.log("OBJS: \n");
+    // console.log(objs);
+    console.log(aval_rooms);
+
 
     var room_info = {
         'aval_room' : aval_rooms, 
