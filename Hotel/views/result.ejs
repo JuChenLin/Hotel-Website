@@ -74,10 +74,10 @@
                       <div class="field-icon-wrap">
                         <div class="icon"><span class="ion-ios-arrow-down"></span></div>
                         <select name="adults" id="adults" class="form-control">
-                          <option value="">1</option>
-                          <option value="">2</option>
-                          <option value="">3</option>
-                          <option value="">4+</option>
+                          <option value="1">1</option>
+                          <option value="2">2</option>
+                          <option value="3">3</option>
+                          <option value="4">4+</option>
                         </select>
                       </div>
                     </div>
@@ -86,10 +86,10 @@
                       <div class="field-icon-wrap">
                         <div class="icon"><span class="ion-ios-arrow-down"></span></div>
                         <select name="children" id="children" class="form-control">
-                          <option value="">1</option>
-                          <option value="">2</option>
-                          <option value="">3</option>
-                          <option value="">4+</option>
+                          <option value="1">1</option>
+                          <option value="2">2</option>
+                          <option value="3">3</option>
+                          <option value="4">4+</option>
                         </select>
                       </div>
                     </div>
@@ -101,14 +101,18 @@
               </div>
             </form>
           </div>
-
-
         </div>
       </div>
     </section>
 
+    <!-- yuantai -->
     <section class="py-5 bg-light">
       <div class="container">
+        <div class="form-wrapper" style="text-align:center;">
+          <button id="all" class="btn btn-primary btn-block text-white" disabled="">Show All Rooms</button>
+          <button id="only" class="btn btn-primary btn-block text-white">Show Only Available</button>
+        </div>
+        <br/>
         <div id="ind_no_result" class="" data-aos="fade-up">
             <div class="form-wrapper" style="text-align:center;" data-aos="fade-up">
                 <p id="no_res">No Result ...</p>
@@ -116,25 +120,13 @@
             </div>    
         </div>
 
+        <br/>
+
         <div id="aval_rooms" class="row">
             
         </div>
       </div>
     </section>
-
-
-
-            
-
-
-
-
-
-
-
-
-
-
 
 
     <section class="section">
@@ -316,12 +308,6 @@
 
 
     
-
-
-
-
-
-    
     <section class="section bg-image overlay" style="background-image: url('images/hero_4.jpg');">
         <div class="container" >
           <div class="row align-items-center">
@@ -355,6 +341,29 @@
       // yuantai fu
       $( document ).ready(function() {        
         console.log( "searching...!" );
+
+
+        
+        $('#add').on("click", function() {
+          if ($('#all').attr('disabled') == false) {
+            // do nothing
+            console.log('in');
+          } else {
+            $('#only').attr('disabled', false);
+            $('#all').attr('disabled', true);
+          }
+        });
+
+        $('#only').on("click", function() {
+          if ($('#only').attr('disabled') == false) {
+            // do nothing
+            console.log('in');
+          } else {
+            $('#all').attr('disabled', false);
+            $('#only').attr('disabled', true);
+          }
+        });
+
         $('#searchform').submit(function(e) {
           e.preventDefault(); // avoid to execute the actual submit of the form.
           var form = $(this);
@@ -373,31 +382,6 @@
               var room_with_detail = data["room_with_detail"];
               console.log(room_with_detail);
               $('.room-for-book').remove();
-
-            // <p>This is the place I want to insert results</p>
-            // <div class="col-md-6 col-lg-4 mb-5" data-aos="fade-up">
-            //     <a href="/room/1" class="room">
-            //         <figure class="img-wrap">
-            //             <img src="" alt="Free website template" class="img-fluid mb-3">
-            //         </figure>
-            //         <div class="p-3 text-center room-info">
-            //             <h2>This is room name</h2>
-            //             <span class="text-uppercase letter-spacing-1">300$ / per night</span>
-            //         </div>
-            //     </a>
-                
-            //     <div class="form-wrapper" style="text-align:center;">
-            //         <button class="btn btn-primary" type="button" onclick="location.href='/confirm/';" >Click Me!</button>
-            //         <% if (userrole) { %>
-            //         <a class="btn btn-secondary" href="/edit" role="button"> Edit </a>
-            //         <a class="btn btn-secondary" href="#" role="button"> Delet </a>
-            //         <% } %>
-            //     </div>    
-            // </div>
-
-
-
-
               var dic = {}
               var count = 0;
               for (var i in aval_room) {
@@ -412,15 +396,22 @@
                 var entry = '';
                 var pAddress = room['pAddress'];
                 var but_dis = '';
-                var but_name = 'Detail'
+                var but_name = 'Book'
+                var but_color = 'primary';
+                var checkin_date = $('#checkin_date').val();
+                var checkout_date = $('#checkout_date').val();
+                var adults = $('#adults').children("option:selected").val();
+                var children = $('#children').children("option:selected").val();
                 // console.log(id);
                 if (!(id in dic)) {
                   console.log('in');
+                  but_color = 'secondary';
                   but_dis = 'disabled';
                   but_name = 'Sold Out!'
                 }
                 if (room[pAddress] == null) pAddress = '';
-                entry += '<div class="col-md-6 col-lg-4 mb-5" data-aos="fade-up">' + 
+
+                entry += '<div class="room-for-book col-md-6 col-lg-4 mb-5" data-aos="fade-up">' + 
                             '<a href="/confirm/' + id + '" class="room">' + 
                               '<figure class="img-wrap">' + 
                                 '<img src="' + room[pAddress] + '" alt="picture of ' + room['name'] + '" class="img-fluid mb-3">' +
@@ -431,7 +422,18 @@
                               '</div>' + 
                             '</a>' +
                             '<div class="form-wrapper" style="text-align:center;">' + 
-                              '<button class="btn btn-primary" type="button" ' + but_dis + '>' + but_name + '</button>' + 
+                              '<form id="form' + id + '" action="/reservation" method="GET">' + 
+                                '<input type="hidden" name="checkin_date" value="' + checkin_date + '">' +
+                                '<input type="hidden" name="checkout_date" value="' + checkout_date + '">' +
+                                '<input type="hidden" name="adults" value=' + adults + '>' +
+                                '<input type="hidden" name="children" value=' + children + '>' +
+                                '<input type="hidden" name="id" value=' + room['id'] + '>' +
+                                '<input type="hidden" name="name" value=' + room['name'] + '>' +
+                                '<input type="hidden" name="price" value=' + room['price'] + '>' +
+                                '<input type="hidden" name="feature" value="' + room['feature'] + '">' +
+                                '<input type="hidden" name="pAddress" value="' + room['pAddress'] + '">' +
+                                '<button class="btn btn-' + but_color + '" type="submit" form="form'+ id + '" ' + but_dis + '>' + but_name + '</button>' + 
+                              '</form>' + 
                               '<% if (userrole) { %>' + 
                               '<a class="btn btn-secondary" href="/edit" role="button"> Edit </a>' +
                               '<a class="btn btn-secondary" href="#" role="button"> Delet </a>' +
@@ -444,7 +446,6 @@
               }
             }
           });
-          
         });
       });
     </script>
