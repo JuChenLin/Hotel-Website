@@ -40,7 +40,7 @@ create table room_type (
 create table hotel_room (
     hotel_id varchar(10) not null,
     room_id int not null,
-    rooms_avalability boolean default true,
+    rooms_availability boolean default true,
     total_num int not null,
     room_price float not null, 
     primary key(hotel_id, room_id)
@@ -219,6 +219,13 @@ insert into hotel_amenities values('ho000001', 5);
 insert into hotel_amenities values('ho000001', 6);
 insert into hotel_amenities values('ho000001', 7);
 insert into hotel_amenities values('ho000001', 8);
+
+-- room_not_available_date table
+insert into room_not_available_date values('ho000001', 3, '2019-10-12', 3);
+insert into room_not_available_date values('ho000001', 3, '2019-10-13', 3);
+insert into room_not_available_date values('ho000001', 4, '2019-10-12', 4);
+insert into room_not_available_date values('ho000001', 6, '2019-10-10', 2);
+insert into room_not_available_date values('ho000001', 10, '2019-10-10', 2);
 
 
 
