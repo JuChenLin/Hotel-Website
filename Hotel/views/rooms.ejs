@@ -130,7 +130,11 @@
             <div class="col-md-6 col-lg-4 mb-5" data-aos="fade-up">
                 <a href="/room/<%= rooms[i].room_id %>" class="room">
                     <figure class="img-wrap">
+                        <% if (rooms[i].rooms_availability) { %>
                         <img src="<%= rooms[i].photo_address %>" alt="Free website template" class="img-fluid mb-3">
+                        <% } else { %>
+                        <img src="<%= rooms[i].photo_address %>" alt="Free website template" class="img-fluid mb-3" style="filter: grayscale(100%);">
+                        <% } %>
                     </figure>
                     <div class="p-3 text-center room-info">
                         <h2><%= rooms[i].room_name %></h2>
@@ -138,9 +142,17 @@
                     </div>
                 </a>
                 <% if (userrole) { %>
-                <div class="form-wrapper" style="text-align:center;">
+                <div class="form-wrapper" style="text-align:center;"> 
                     <a class="btn btn-secondary" href="/edit/<%= rooms[i].room_id %>" role="button"> Edit </a>
-                    <a class="btn btn-danger" href="#" role="button"> Delete </a>
+                    <% if (rooms[i].rooms_availability) { %>
+                    <button type="button" class="btn btn-danger" data-toggle="modal" data-target="#delModal" id="dbtn-<%= rooms[i].room_id %>" onclick="getid(this.id)">
+                        Delete
+                    </button>
+                    <% } else { %>
+                    <button type="button" class="btn btn-success" data-toggle="modal" data-target="#enableModal" id="enbtn-<%= rooms[i].room_id %>" onclick="getid(this.id)">
+                        Enable
+                    </button>
+                    <% } %>
                 </div>
                 <% } %>
             </div>
@@ -166,6 +178,57 @@
       </div>
     </section>
     
+    <% if (userrole) { %>
+    <div class="modal fade" id="delModal" tabindex="-1" role="dialog" aria-labelledby="delModalLabel" aria-hidden="true">
+        <div class="modal-dialog" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="delModalLabel">Confirm to delete</h5>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <div class="modal-body">
+                    This will only change the room to unavailable
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                    <button type="button" class="btn btn-danger" id="proceed" >Proceed</button>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="modal fade" id="enableModal" tabindex="-1" role="dialog" aria-labelledby="enableModalLabel" aria-hidden="true">
+        <div class="modal-dialog" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="delModalLabel">Confirm to enable</h5>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <div class="modal-body">
+                    Change the room to available
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                    <button type="button" class="btn btn-success" id="proceed-en">Proceed</button>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <form action="/delete" id="delete" method="POST">
+        <input type="hidden" name="room_id" id="rm_room_id" value="">
+    </form>
+    
+    <form action="/enable" id="enable" method="POST">
+        <input type="hidden" name="room_id" id="en_room_id" value="">
+    </form>
+
+    <% } %>
+
+    
     <%- include partials/footer.ejs %>   
     
     <script src="js/jquery-3.3.1.min.js"></script>
@@ -182,8 +245,29 @@
     <script src="js/bootstrap-datepicker.js"></script> 
     <script src="js/jquery.timepicker.min.js"></script> 
 
-    
-
     <script src="js/main.js"></script>
+    <script>
+        $(document).ready(function(){
+            <% if (userrole) { %>
+            $("#proceed").click(function(){        
+                $("#delete").submit(); // Submit the form
+            });
+            $("#proceed-en").click(function(){        
+                $("#enable").submit(); // Submit the form
+            });
+            <% } %>
+        });
+        function getid(btn_id) {
+            var regex = /\d+/g;
+            var arr_room_id = btn_id.match(regex);
+            var room_id = arr_room_id[0];
+            console.log(room_id);
+            $('#rm_room_id').val(room_id);
+            $('#en_room_id').val(room_id);
+            console.log($('#rm_room_id').val());
+            console.log($('#en_room_id').val());
+        }
+    </script>
+
   </body>
 </html>

@@ -175,7 +175,15 @@
             <% if (userrole) { %>
             <div class="form-wrapper" style="text-align:center;">
                 <a class="btn btn-secondary" href="/edit/<%= details.room_id %>" role="button"> Edit </a>
-                <a class="btn btn-danger" href="#" role="button"> Delete </a>
+                <% if (details.rooms_availability) {%>
+                <button type="button" class="btn btn-danger" data-toggle="modal" data-target="#delModal">
+                    Delete
+                </button>
+                <% } else {%> 
+                <button type="button" class="btn btn-success" data-toggle="modal" data-target="#enableModal">
+                    Enable
+                </button>
+                <% } %>
             </div>
             <% } %>
             
@@ -218,6 +226,56 @@
       </div>
     </section>
     
+    <% if (userrole) { %>
+    <div class="modal fade" id="delModal" tabindex="-1" role="dialog" aria-labelledby="delModalLabel" aria-hidden="true">
+        <div class="modal-dialog" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="delModalLabel">Confirm to delete</h5>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <div class="modal-body">
+                    This will only change the room to unavailable
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                    <button type="button" class="btn btn-danger" id="proceed">Proceed</button>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="modal fade" id="enableModal" tabindex="-1" role="dialog" aria-labelledby="enableModalLabel" aria-hidden="true">
+        <div class="modal-dialog" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="delModalLabel">Confirm to enable</h5>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <div class="modal-body">
+                    Change the room to available
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                    <button type="button" class="btn btn-success" id="proceed-en">Proceed</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <form action="/delete" id="delete" method="POST">
+        <input type="hidden" name="room_id" value="<%=details.room_id %>">
+    </form>
+    
+    <form action="/enable" id="enable" method="POST">
+        <input type="hidden" name="room_id" value="<%=details.room_id %>">
+    </form>
+
+    <% } %>
+    
     <%- include partials/footer.ejs %>   
     
     <script src="js/jquery-3.3.1.min.js"></script>
@@ -237,5 +295,18 @@
     
 
     <script src="js/main.js"></script>
+    <script>
+        $(document).ready(function(){
+            <% if (details.rooms_availability) {%>
+            $("#proceed").click(function(){        
+                $("#delete").submit(); // Submit the form
+            });
+            <% } else { %>
+            $("#proceed-en").click(function(){        
+                $("#enable").submit(); // Submit the form
+            });
+            <% } %>
+        });
+    </script>
   </body>
 </html>

@@ -201,9 +201,53 @@ router.get('/edit/:roomid', async function(req, res) {
 });
 
 router.post('/edit', async function(req, res) {
-    console.log(req.params.room_id);
+    //console.log(req.params.room_id);
     var photos = await editroom(req);
-    res.redirect('/room/'+req.body.room_id);
+    //console.log(req.originalUrl);
+    //res.redirect('/room/'+req.body.room_id);
+    res.redirect('/rooms');
+    /*
+    if(req.user) {
+        if (req.user.role) {
+            var photos = await editroom(req);
+            res.redirect('/room/'+req.body.roomid);
+        } 
+        else {
+            res.redirect('/room/'+req.body.roomid);
+        }
+    } 
+    else {
+        res.redirect('/room/'+req.body.roomid);
+        }
+    */
+});
+
+router.post('/delete', async function(req, res) {
+    console.log(req.body.room_id);
+    var result = await deleteroombyid(req.body.room_id);
+    //console.log(req.originalUrl);
+    //res.redirect('/room/'+req.body.room_id);
+    res.redirect('/rooms');
+    /*
+    if(req.user) {
+        if (req.user.role) {
+            var photos = await editroom(req);
+            res.redirect('/room/'+req.body.roomid);
+        } 
+        else {
+            res.redirect('/room/'+req.body.roomid);
+        }
+    } 
+    else {
+        res.redirect('/room/'+req.body.roomid);
+        }
+    */
+});
+
+router.post('/enable', async function(req, res) {
+    console.log(req.body.room_id);
+    var result = await enableroombyid(req.body.room_id);
+    res.redirect('/rooms');
     /*
     if(req.user) {
         if (req.user.role) {
@@ -455,7 +499,7 @@ async function list_room() {
     sql = "select * from (select room_id as id, total_num as num, room_price as price from hotel_room as hr where rooms_availability = true ) as t1 left join (select * from room_type) as t2 on t1.id = t2.room_id left JOIN (select room_id, MIN(photo_id) from room_photo group by room_id) as t3 on t1.id = t3.room_id";
     */
 
-    sql = "select  hotel_room.room_id, hotel_room.room_price, room_type.room_name, photo.photo_address,  photo.photo_id from hotel_room left join (room_type) ON ( hotel_room.room_id = room_type.room_id) left join (room_photo) ON (room_photo.room_id = hotel_room.room_id) left join (photo) ON (photo.photo_id = room_photo.photo_id);";
+    sql = "select hotel_room.rooms_availability, hotel_room.room_id, hotel_room.room_price, room_type.room_name, photo.photo_address,  photo.photo_id from hotel_room left join (room_type) ON ( hotel_room.room_id = room_type.room_id) left join (room_photo) ON (room_photo.room_id = hotel_room.room_id) left join (photo) ON (photo.photo_id = room_photo.photo_id);";
 
     var arr;
     
@@ -480,11 +524,12 @@ async function list_room() {
                     dict.room_price = result[i].room_price;
                     dict.room_name = result[i].room_name;
                     dict.photo_address = result[i].photo_address;
+                    dict.rooms_availability = result[i].rooms_availability;
                     arr.push(dict);
                     indexs.push(dict.room_id);
                 }
             }
-            //console.log(arr);
+            console.log(arr);
             resolve();
         });
     });
@@ -710,9 +755,82 @@ async function editroom(req) {
     });
 }
 
+function deleteroombyid(roomid) {
+    mysql_db.beginTransaction(async function(err) {
+        console.log('beginTransaction');
+        if (err) { 
+            throw err;
+            //return false;
+        }
+        var i;
+        let lock = new Promise((resolve, reject) => { 
+            mysql_db.query("UPDATE hotel_room SET ? WHERE ?"
+            , [{rooms_availability: false}, {room_id: roomid}],
+            function (err, result) {
+                if (err) {
+                    throw err;
+                    mysql_db.rollback(function() {
+                        throw err;
+                        return;
+                    });
+                }
+                mysql_db.commit(function(err) {
+                    if (err) { 
+                        mysql_db.rollback(function() {
+                            throw err;
+                            return;
+                        });
+                    }
+                    console.log('Transaction Complete.');
+                    //mysql_db.end();
+                    resolve();
+                });
+            });
+        });
+        let unlock = await lock;
+    });
+}
+
+function enableroombyid(roomid) {
+    mysql_db.beginTransaction(async function(err) {
+        console.log('beginTransaction');
+        if (err) { 
+            throw err;
+            //return false;
+        }
+        var i;
+        let loop_lock = new Promise((resolve, reject) => { 
+            mysql_db.query("UPDATE hotel_room SET ? WHERE ?"
+            , [{rooms_availability: true}, {room_id: roomid}],
+            function (err, result) {
+                if (err) {
+                    throw err;
+                    mysql_db.rollback(function() {
+                        throw err;
+                        return;
+                    });
+                }
+                mysql_db.commit(function(err) {
+                    if (err) { 
+                        mysql_db.rollback(function() {
+                            throw err;
+                            return;
+                        });
+                    }
+                    console.log('Transaction Complete.');
+                    //mysql_db.end();
+                    resolve();
+                });
+            });
+        });
+        let unlock = await lock;
+    });
+}
+
 // router.post('/rooms', function(req, res){
 
 //     // var checkin_date = req.body.checkin_date;
+//     unlock = await lock;
 //     // var checkout_date = req.body.checkout_date;
 //     // var adults = req.body.adults;
 //     // var children = req.body.children;
