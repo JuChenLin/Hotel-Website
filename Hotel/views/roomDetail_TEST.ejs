@@ -27,7 +27,7 @@
   </head>
   <body>
     
-    <%- include partials/header.ejs %>   
+   <!--  <%- include partials/header.ejs %>    -->
     
     <section class="site-hero inner-page overlay" style="background-image: url(images/hero_4.jpg)" data-stellar-background-ratio="0.5">
       <div class="container">
@@ -57,7 +57,7 @@
         <div class="row check-availabilty" id="next">
           <div class="block-32" data-aos="fade-up" data-aos-offset="-200">
             <form action="#">
-              <div> <p> Interested? Check Availability of This Room </p></div>
+              <div> <p> Interested? Check availability of this Room </p></div>
               <div class="row">
                 <div class="col-md-6 mb-3 mb-lg-0 col-lg-3">
                   <label for="checkin_date" class="font-weight-bold text-black">Check In</label>
@@ -115,35 +115,20 @@
     <!-- Search Bar section -->
 
     
-    <section class="section">
+    <!-- <section class="section">
       <div class="container">
         
-          <h2> <%= details.room_name %> </h2>
+          <h2> Room Name </h2>
         <div class="row">
-        <% for(var i=0; i < photos.length; i++) { %>
           <div>
-              <img src="<%= photos[i].photo_address %>" alt="Free website template" class="img-fluid">
-          </div>
-        <% } %>
-        </div>
-      </div>
-    </section>
-    
-    <!-- <section class="section bg-light">
-
-      <div class="container">
-        <div class="row justify-content-center mb-5">
-          <div class="col-md-7">
-            <h6 class="heading" data-aos="fade">Information</h6>
-            <p data-aos="fade">Bed Type</p>
-            <p data-aos="fade">Number of Bed</p>
-            <p data-aos="fade"># available (?)</p>
+              <img src="images/hero_4.jpg" alt="Free website template" class="img-fluid">
           </div>
         </div>
       </div>
     </section> -->
-
+    
     <section class="section bg-light">
+
       <div class="container">
         <div class="row justify-content-center mb-5">
           <div class="col-md-7">
@@ -175,13 +160,11 @@
               </tbody>
             </table>
 
-            <p id="reminder" data-aos="fade">(if avaibla # left < 3 ->) "There is only # left, boot RIGHT NOW!"</p>
+            <p data-aos="fade">(if avaibla # left < 3 ->) "There is only # left, boot RIGHT NOW!"</p>
           </div>
         </div>
       </div>
     </section>
-
-
 
     <section class="section bg-image overlay" style="background-image: url('images/hero_4.jpg');">
       <div class="container" >
@@ -195,8 +178,6 @@
         </div>
       </div>
     </section>
-    
-    <%- include partials/footer.ejs %>   
     
     <script src="js/jquery-3.3.1.min.js"></script>
     <script src="js/jquery-migrate-3.0.1.min.js"></script>
