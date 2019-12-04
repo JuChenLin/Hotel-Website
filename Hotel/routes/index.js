@@ -3,7 +3,6 @@ var router = express.Router();
 var monk = require('monk');
 var db = monk('localhost:27017/Hotel');
 var mysql = require('mysql');
-
 var mysql_db = mysql.createConnection({
     host: "localhost",
     port: 3306,
@@ -18,6 +17,7 @@ mysql_db.connect(function(err) {
     }
     console.log('connected as id ' + mysql_db.threadId);
 });
+var util = require('util');
 
 
 
@@ -135,7 +135,6 @@ router.get('/contact', function(req, res){
 });
 
 router.post('/reservation', function(req, res){
-   
     if(req.user) {
         search_available_rooms(req);
     }
@@ -202,9 +201,22 @@ router.post('/addrooms', function(req, res){
     }
 });
 
-router.post('/rooms', function(req, res){
-    search_available_rooms(1, 1, 1, 1);
-    res.json({"boo" : "foo"});
+router.post('/rooms', async function(req, res){
+    // yuantai fu
+    var checkin_date = new Date(2019, 9, 10);
+    var checkout_date = new Date(2019, 9, 14);
+    var adults = req.body.adults;
+    var children = req.body.children;
+    var result = await search_available_rooms(checkin_date, checkout_date, adults, children);
+    // console.log(util.inspect(result, false, null, true ));
+    res.json(result);
+});
+
+router.get('/member', function(req, res){
+    var username = false;
+    if (req.user) username = req.user.username;
+    console.log(username);
+    res.render('member', { username : username });
 });
 
 
@@ -687,57 +699,7 @@ async function getphotosbyroomid(id) {
 // });
 
 
-
-// async function find_rooms(req) {
-
-//     l
-//     var checkin_date = new Date(2019, 10, 10);
-//     var checkout_date = new Date(2019, 10, 14);
-//     var adults = req.body.adults;
-//     var children = req.body.children;
-
-
-//     mysql.connect(function(err) {
-//         if (err) throw err;
-//         console.log("Connected!");
-
-//         var rooms;
-//         var sql = "select room_id, total_num " + 
-//                 "from hotel_room as hr " + 
-//                 "where rooms_availability = true ";
-//         mysql.query(sql, function (err, result) {
-//             if (err) throw err;
-//             rooms = result
-//             console.log(util.inspect(rooms, false, null, true /* enable colors */));
-            
-//         });
-
-//         console.log(util.inspect(rooms, false, null, true /* enable colors */));
-        
-//         var not_avlb_rooms_with_date;
-//         var checkin_str = checkin_date.getFullYear() + '-' + checkin_date.getMonth() + '-' + checkin_date.getDate();
-//         var checkout_str = checkout_date.getFullYear() + '-' + checkout_date.getMonth() + '-' + checkout_date.getDate();
-//         var sql = "select rn.room_id, rn.not_available_num " + 
-//                 "from room_not_available_date as rn " + 
-//                 "where not_available_date >= " + checkin_str +
-//                 " and not_available_date < " + checkout_str;
-//         var cur = checkin_date;
-//         // console.log(checkin_str)
-//         // console.log(checkout_str)
-
-//         mysql.query(sql, function (err, result) {
-//             if (err) throw err;
-//             not_avlb_rooms_with_date = result
-//             console.log(util.inspect(not_avlb_rooms_with_date, false, null, true /* enable colors */));
-            
-//         });
-
-//     });
-// }
-
-
 async function search_available_rooms(checkin_date, checkout_date, adults, children){
-   
     var rooms;
     var sql_room = "select room_id as id, total_num as num, room_price as price " + 
             "from hotel_room as hr " + 
@@ -746,11 +708,11 @@ async function search_available_rooms(checkin_date, checkout_date, adults, child
         mysql_db.query(sql_room, function (err, result) {
             if (err) throw err;
             rooms = result;
-            // console.log(util.inspect(rooms, false, null, true));
+            resolve();
         });             
     });
     let unlock1 = await lock1;
-    console.log(util.inspect(rooms, false, null, true));
+    // console.log(util.inspect(rooms, false, null, true));
 
     var not_aval_rooms_with_date;
     var checkin_str = checkin_date.getFullYear() + '-' + (checkin_date.getMonth() + 1) + '-' + checkin_date.getDate();
@@ -764,10 +726,11 @@ async function search_available_rooms(checkin_date, checkout_date, adults, child
             if (err) throw err;
             not_aval_rooms_with_date = result;
             // console.log(util.inspect(not_aval_rooms_with_date, false, null, true ));
+            resolve();
         });             
     });
     let unlock2 = await lock2;
-    console.log(util.inspect(not_aval_rooms_with_date, false, null, true ));
+    // console.log(util.inspect(not_aval_rooms_with_date, false, null, true ));
 
     var dic = {};
     for (var i = 0; i < rooms.length; i++) {
@@ -812,6 +775,7 @@ async function search_available_rooms(checkin_date, checkout_date, adults, child
         collection.find( query , function(err, result){
             if (err) throw err;
             reservations = result;
+            resolve();
         });
     });
     let unlock3 = await lock3;
@@ -858,25 +822,42 @@ async function search_available_rooms(checkin_date, checkout_date, adults, child
             aval_rooms.push(e);
         }
     }
-    console.log(dic);
-    console.log(aval_rooms);
+    // console.log(dic);
+    // console.log(aval_rooms);
 
     var room_with_detail;
     var sql_all_room_type = "select * from room_type";
     var sql_room_detail = "select * from (" +  sql_room + ') as t1 ' 
             + 'left join (' + sql_all_room_type + ') as t2 on t1.id = t2.room_id';
-    console.log(sql_room_detail);
-    var sql_room_photo = 'select room_id, MIN(photo_id) from room_photo group by room_id';
-    var sql_final = sql_room_detail + " left join (" + sql_room_photo + ')'
+    var sql_room_photo = 'select room_id, MIN(photo_id) as pid from room_photo group by room_id';
+    var sql_final = sql_room_detail + " left join (" + sql_room_photo + ') as t3 on t1.id = t3.room_id'
+    // console.log(sql_final);
+
     let lock4 = new Promise((resolve, reject) => { 
-        mysql_db.query(sql_room_detail, function (err, result) {
+        mysql_db.query(sql_final, function (err, result) {
             if (err) throw err;
-            console.log(result);
             room_with_detail = result;
+            resolve();
         });
     });
     let unlock4 = await lock4;
-    return aval_rooms;
+    var objs = [];
+    for (var i = 0;i < room_with_detail.length; i++) {
+        var e = {};
+        for (var d in room_with_detail[i]) {
+            e[d] = room_with_detail[i][d];
+        }
+        objs.push(e);
+    }
+    // console.log(aval_rooms);
+    // console.log(room_with_detail);
+
+    var room_info = {
+        'aval_room' : aval_rooms, 
+        'room_with_detail' : objs
+    };
+    // console.log(room_info);
+    return room_info;
 }
 
 module.exports = router;
