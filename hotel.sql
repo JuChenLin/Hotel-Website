@@ -42,7 +42,7 @@ create table hotel_room (
     room_id int not null,
     rooms_availability boolean default true,
     total_num int not null,
-    room_price int not null, 
+    room_price float not null, 
     primary key(hotel_id, room_id)
 );
 

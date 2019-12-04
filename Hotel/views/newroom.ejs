@@ -1,0 +1,89 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<meta charset="utf-8">
+		<title>RegistrationForm</title>
+		<meta name="viewport" content="width=device-width, initial-scale=1.0">
+		
+		<!-- MATERIAL DESIGN ICONIC FONT -->
+		<link rel="stylesheet" href="fonts/material-design-iconic-font/css/material-design-iconic-font.min.css">
+
+		<!-- STYLE CSS -->
+		<link rel="stylesheet" href="css/addroom.css">
+        <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
+        <script src="js/strongpwd.js"></script>
+
+	</head>
+
+	<body>
+
+		<div class="wrapper" style="background-image: url('images/bg-registration-form-1.jpg');">
+			<div class="inner" style="width:100%">
+				<form method="POST" action="/addrooms" enctype="multipart/form-data">
+					<h3>Add New Room</h3>
+					<div class="form-wrapper">
+						<input type="text" name="room_name" placeholder="Room Name" class="form-control" required>
+						<i class="zmdi zmdi-account"></i>
+					</div>
+                    <div class="form-wrapper">
+						<input type="text" name="room_feature" placeholder="Room Feature" class="form-control" required>
+						<i class="zmdi zmdi-account"></i>
+					</div>
+
+					<div class="form-wrapper">
+                        <input type="file" name="upload" multiple accept="image/*">
+					</div>
+                    <br>
+
+					<div class="form-group">
+						<input type="number" name="total_num" placeholder="Number of Room" class="form-control" required>
+						<input type="number" step=0.01 name="room_price" placeholder="Room Price" class="form-control" required>
+					</div>
+					<div class="form-group">
+                        <select name="bed_type1" id="bed_type1" class="form-control" required>
+                          <option selected></option>
+                          <option value="twin bed">twin bed</option>
+                          <option value="full bed">full bed</option>
+                          <option value="queen bed">queen bed</option>
+                          <option value="king bed">king bed</option>
+                          <option value="ca king bed">ca king bed</option>
+                          <option value="sofa bed">sofa bed</option>
+                        </select>
+						<input type="number" name="number_of_beds1" placeholder="Number of Beds" class="form-control" required>
+					</div>
+                    <div class="form-group">
+                        <select name="bed_type2" id="bed_type2" class="form-control">
+                          <option value="" selected></option>
+                          <option value="twin bed">twin bed</option>
+                          <option value="full bed">full bed</option>
+                          <option value="queen bed">queen bed</option>
+                          <option value="king bed">king bed</option>
+                          <option value="ca king bed">ca king bed</option>
+                          <option value="sofa bed">sofa bed</option>
+                        </select>
+
+						<input type="number" name="number_of_beds2" placeholder="Number of Beds" class="form-control">
+					</div>
+                    <div class="form-group">
+                        <select name="bed_type3" id="bed_type3" class="form-control">
+                          <option valeu="" selected></option>
+                          <option value="twin bed">twin bed</option>
+                          <option value="full bed">full bed</option>
+                          <option value="queen bed">queen bed</option>
+                          <option value="king bed">king bed</option>
+                          <option value="ca king bed">ca king bed</option>
+                          <option value="sofa bed">sofa bed</option>
+                        </select>
+
+						<input type="number" name="number_of_beds3" placeholder="Number of Beds" class="form-control">
+					</div>
+
+                    <button type="submit" id="submit">
+					    Submit
+						<i class="zmdi zmdi-arrow-right"></i>
+					</button>
+				</form>
+			</div>
+		</div>
+	</body>
+</html>

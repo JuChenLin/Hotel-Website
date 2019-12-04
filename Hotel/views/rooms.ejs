@@ -34,7 +34,7 @@
           <div class="col-md-10 text-center" data-aos="fade">
             <h1 class="heading mb-3">Rooms</h1>
             <ul class="custom-breadcrumbs mb-4">
-              <li><a href="index.html">Home</a></li>
+              <li><a href="/index">Home</a></li>
               <li>&bullet;</li>
               <li>Rooms</li>
             </ul>
@@ -55,8 +55,9 @@
        
         <div class="row check-availabilty" id="next">
           <div class="block-32" data-aos="fade-up" data-aos-offset="-200">
-
             <form action="#">
+            <form action="/reservation" method="POST">
+              <div> <p> Interested? Check Availability of This Room </p></div>
               <div class="row">
                 <div class="col-md-6 mb-3 mb-lg-0 col-lg-3">
                   <label for="checkin_date" class="font-weight-bold text-black">Check In</label>
@@ -101,7 +102,7 @@
                   </div>
                 </div>
                 <div class="col-md-6 col-lg-3 align-self-end">
-                  <button class="btn btn-primary btn-block text-white">Check Availabilty</button>
+                  <button type="submit" class="btn btn-primary btn-block text-white">Check Availabilty</button>
                 </div>
               </div>
             </form>
@@ -115,79 +116,37 @@
     
     <section class="section">
       <div class="container">
-        
+
+        <% if (userrole) { %>
+        <div class="col-md-6 col-lg-3" style="float: right;">
+            <a href="/addrooms" class="btn btn-info btn-block text-white">Add a room type</a>
+        </div>
+        <br>
+        <% } %>
+
         <div class="row">
-          <div class="col-md-6 col-lg-4 mb-5" data-aos="fade-up">
-            <a href="#" class="room">
-              <figure class="img-wrap">
-                <img src="images/img_1.jpg" alt="Free website template" class="img-fluid mb-3">
-              </figure>
-              <div class="p-3 text-center room-info">
-                <h2>Single Room</h2>
-                <span class="text-uppercase letter-spacing-1">90$ / per night</span>
-              </div>
-            </a>
-          </div>
 
-          <div class="col-md-6 col-lg-4 mb-5" data-aos="fade-up">
-            <a href="#" class="room">
-              <figure class="img-wrap">
-                <img src="images/img_2.jpg" alt="Free website template" class="img-fluid mb-3">
-              </figure>
-              <div class="p-3 text-center room-info">
-                <h2>Family Room</h2>
-                <span class="text-uppercase letter-spacing-1">120$ / per night</span>
-              </div>
-            </a>
-          </div>
+            <% for(var i=0; i < rooms.length; i++) { %>
+            <div class="col-md-6 col-lg-4 mb-5" data-aos="fade-up">
+                <a href="/room/<%= rooms[i].room_id %>" class="room">
+                    <figure class="img-wrap">
+                        <img src="<%= rooms[i].photo_address %>" alt="Free website template" class="img-fluid mb-3">
+                    </figure>
+                    <div class="p-3 text-center room-info">
+                        <h2><%= rooms[i].room_name %></h2>
+                        <span class="text-uppercase letter-spacing-1"><%= rooms[i].room_price %>$ / per night</span>
+                    </div>
+                </a>
+                <% if (userrole) { %>
+                <div class="form-wrapper" style="text-align:center;">
+                    <a class="btn btn-secondary" href="/edit" role="button"> Edit </a>
+                    <a class="btn btn-secondary" href="#" role="button"> Delet </a>
+                </div>
+                <% } %>
+            </div>
 
-          <div class="col-md-6 col-lg-4 mb-5" data-aos="fade-up">
-            <a href="#" class="room">
-              <figure class="img-wrap">
-                <img src="images/img_3.jpg" alt="Free website template" class="img-fluid mb-3">
-              </figure>
-              <div class="p-3 text-center room-info">
-                <h2>Presidential Room</h2>
-                <span class="text-uppercase letter-spacing-1">250$ / per night</span>
-              </div>
-            </a>
-          </div>
-
-          <div class="col-md-6 col-lg-4 mb-5" data-aos="fade-up">
-            <a href="#" class="room">
-              <figure class="img-wrap">
-                <img src="images/img_1.jpg" alt="Free website template" class="img-fluid mb-3">
-              </figure>
-              <div class="p-3 text-center room-info">
-                <h2>Single Room</h2>
-                <span class="text-uppercase letter-spacing-1">90$ / per night</span>
-              </div>
-            </a>
-          </div>
-
-          <div class="col-md-6 col-lg-4 mb-5" data-aos="fade-up">
-            <a href="#" class="room">
-              <figure class="img-wrap">
-                <img src="images/img_2.jpg" alt="Free website template" class="img-fluid mb-3">
-              </figure>
-              <div class="p-3 text-center room-info">
-                <h2>Family Room</h2>
-                <span class="text-uppercase letter-spacing-1">120$ / per night</span>
-              </div>
-            </a>
-          </div>
-
-          <div class="col-md-6 col-lg-4 mb-5" data-aos="fade-up">
-            <a href="#" class="room">
-              <figure class="img-wrap">
-                <img src="images/img_3.jpg" alt="Free website template" class="img-fluid mb-3">
-              </figure>
-              <div class="p-3 text-center room-info">
-                <h2>Presidential Room</h2>
-                <span class="text-uppercase letter-spacing-1">250$ / per night</span>
-              </div>
-            </a>
-          </div>
+            <% } %>
+          
 
         </div>
       </div>
