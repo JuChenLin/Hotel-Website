@@ -108,7 +108,7 @@
     <!-- yuantai -->
     <section class="py-5 bg-light">
       <div class="container">
-        <div class="form-wrapper" style="text-align:center;">
+        <div class="form-wrapper" style="text-align:center;" data-aos="fade-up">
           <button id="all" class="btn btn-primary btn-block text-white" disabled="">Show All Rooms</button>
           <button id="only" class="btn btn-primary btn-block text-white">Show Only Available</button>
         </div>
@@ -123,6 +123,7 @@
         <br/>
 
         <div id="aval_rooms" class="row">
+          
             
         </div>
       </div>
@@ -339,36 +340,98 @@
 
     <script type="text/javascript">
       // yuantai fu
-      $( document ).ready(function() {        
-        console.log( "searching...!" );
-
-
-        
-        $('#add').on("click", function() {
-          if ($('#all').attr('disabled') == false) {
-            // do nothing
-            console.log('in');
-          } else {
-            $('#only').attr('disabled', false);
-            $('#all').attr('disabled', true);
+      $( document ).ready(function() { 
+        function renderResult(data) {
+          var aval_room = data["aval_room"];
+          var room_with_detail = data["room_with_detail"];
+          console.log(room_with_detail);
+          $('.room-for-book').remove();
+          var dic = {}
+          var count = 0;
+          for (var i in aval_room) {
+            id = aval_room[i];
+            dic[id] = true;
+            count += 1;
           }
-        });
+          var isHide = false;
+          for (var id in room_with_detail) {
+            if (!isHide) $('#no_res').hide();
+            var room = room_with_detail[id];
+            var entry = '';
+            var pAddress = room['pAddress'];
+            var but_dis = '';
+            var but_name = 'Book'
+            var but_color = 'primary';
+            var add_class = '';
+            var isHide = '';
+            var checkin_date = $('#checkin_date').val();
+            var checkout_date = $('#checkout_date').val();
+            var adults = $('#adults').children("option:selected").val();
+            var children = $('#children').children("option:selected").val();
+            // console.log(id);
+            if (!(id in dic)) {
+              console.log('in');
+              but_color = 'secondary';
+              but_dis = 'disabled';
+              but_name = 'Sold Out!';
+              add_class = 'not_available';
+              if ($("#only").is(":disabled")) {
+                // if only disabled, all select
+                isHide = 'hidden';
+              }
 
-        $('#only').on("click", function() {
-          if ($('#only').attr('disabled') == false) {
-            // do nothing
-            console.log('in');
-          } else {
-            $('#all').attr('disabled', false);
-            $('#only').attr('disabled', true);
+            }
+            if (room[pAddress] == null) pAddress = '';
+
+            entry += '<div class="room-for-book col-md-6 col-lg-4 mb-5 ' + add_class + '" data-aos="fade-up" ' + isHide + '>' + 
+                        '<div>' + 
+                          '<figure class="img-wrap">' + 
+                            '<img src="' + room[pAddress] + '" alt="picture of ' + room['name'] + '" class="img-fluid mb-3">' +
+                          '</figure>' + 
+                          '<div class="p-3 text-center room-info">' + 
+                            '<h2>' + room['name'].toUpperCase() + '</h2>' + 
+                            '<span class="text-uppercase letter-spacing-1">' + room['price'] + '$ / per night</span>' +
+                          '</div>' + 
+                        '</div>' +
+                        '<div class="form-wrapper" style="text-align:center;">' + 
+                          '<form id="form' + id + '" action="/reservation" method="GET">' + 
+                            '<input type="hidden" name="checkin_date" value="' + checkin_date + '">' +
+                            '<input type="hidden" name="checkout_date" value="' + checkout_date + '">' +
+                            '<input type="hidden" name="adults" value=' + adults + '>' +
+                            '<input type="hidden" name="children" value=' + children + '>' +
+                            '<input type="hidden" name="id" value=' + room['id'] + '>' +
+                            '<input type="hidden" name="name" value=' + room['name'] + '>' +
+                            '<input type="hidden" name="price" value=' + room['price'] + '>' +
+                            '<input type="hidden" name="feature" value="' + room['feature'] + '">' +
+                            '<input type="hidden" name="pAddress" value="' + room['pAddress'] + '">' +
+                            '<button class="btn btn-' + but_color + '" type="submit" form="form'+ id + '" ' + but_dis + '>' + but_name + '</button>' + 
+                          '</form>' + 
+                          '<% if (userrole) { %>' + 
+                          '<a class="btn btn-secondary" href="/edit" role="button"> Edit </a>' +
+                          '<a class="btn btn-secondary" href="#" role="button"> Delet </a>' +
+                          '<% } %>' + 
+                        '</div>' + 
+                      '</div>';
+
+            $('#res_sum').text(count + ' avaliable rooms are found ...');
+            $('#aval_rooms').append(entry);
           }
-        });
+        }
 
-        $('#searchform').submit(function(e) {
-          e.preventDefault(); // avoid to execute the actual submit of the form.
-          var form = $(this);
+        function getResult() {
+
+        }
+
+        var queryProvided = <%= queryProvided%>;
+        console.log(queryProvided);
+        if (queryProvided) {
+          $('#checkin_date').val("<%= checkin_date%>");
+          $('#checkout_date').val("<%= checkout_date%>");
+          $("#adults").val(<%= adults%>);
+          $("#children").val(<%= children%>);
+          console.log("in");
+          var form = $('#searchform');
           var url = form.attr('action');
-          console.log( "searching...!" );
           $.ajax({
             type: "POST",
             url: url,
@@ -377,73 +440,38 @@
             {
               console.log('results are back');
               console.log(data);
-              // debugger;
-              var aval_room = data["aval_room"];
-              var room_with_detail = data["room_with_detail"];
-              console.log(room_with_detail);
-              $('.room-for-book').remove();
-              var dic = {}
-              var count = 0;
-              for (var i in aval_room) {
-                id = aval_room[i];
-                dic[id] = true;
-                count += 1;
-              }
-              var isHide = false;
-              for (var id in room_with_detail) {
-                if (!isHide) $('#no_res').hide();
-                var room = room_with_detail[id];
-                var entry = '';
-                var pAddress = room['pAddress'];
-                var but_dis = '';
-                var but_name = 'Book'
-                var but_color = 'primary';
-                var checkin_date = $('#checkin_date').val();
-                var checkout_date = $('#checkout_date').val();
-                var adults = $('#adults').children("option:selected").val();
-                var children = $('#children').children("option:selected").val();
-                // console.log(id);
-                if (!(id in dic)) {
-                  console.log('in');
-                  but_color = 'secondary';
-                  but_dis = 'disabled';
-                  but_name = 'Sold Out!'
-                }
-                if (room[pAddress] == null) pAddress = '';
+              renderResult(data);
+            }
+          });
+        }
 
-                entry += '<div class="room-for-book col-md-6 col-lg-4 mb-5" data-aos="fade-up">' + 
-                            '<a href="/confirm/' + id + '" class="room">' + 
-                              '<figure class="img-wrap">' + 
-                                '<img src="' + room[pAddress] + '" alt="picture of ' + room['name'] + '" class="img-fluid mb-3">' +
-                              '</figure>' + 
-                              '<div class="p-3 text-center room-info">' + 
-                                '<h2>' + room['name'].toUpperCase() + '</h2>' + 
-                                '<span class="text-uppercase letter-spacing-1">' + room['price'] + '$ / per night</span>' +
-                              '</div>' + 
-                            '</a>' +
-                            '<div class="form-wrapper" style="text-align:center;">' + 
-                              '<form id="form' + id + '" action="/reservation" method="GET">' + 
-                                '<input type="hidden" name="checkin_date" value="' + checkin_date + '">' +
-                                '<input type="hidden" name="checkout_date" value="' + checkout_date + '">' +
-                                '<input type="hidden" name="adults" value=' + adults + '>' +
-                                '<input type="hidden" name="children" value=' + children + '>' +
-                                '<input type="hidden" name="id" value=' + room['id'] + '>' +
-                                '<input type="hidden" name="name" value=' + room['name'] + '>' +
-                                '<input type="hidden" name="price" value=' + room['price'] + '>' +
-                                '<input type="hidden" name="feature" value="' + room['feature'] + '">' +
-                                '<input type="hidden" name="pAddress" value="' + room['pAddress'] + '">' +
-                                '<button class="btn btn-' + but_color + '" type="submit" form="form'+ id + '" ' + but_dis + '>' + but_name + '</button>' + 
-                              '</form>' + 
-                              '<% if (userrole) { %>' + 
-                              '<a class="btn btn-secondary" href="/edit" role="button"> Edit </a>' +
-                              '<a class="btn btn-secondary" href="#" role="button"> Delet </a>' +
-                              '<% } %>' + 
-                            '</div>' + 
-                          '</div>';
 
-                $('#res_sum').text(count + ' matched rooms are found ...');
-                $('#aval_rooms').append(entry);
-              }
+        
+        $('#all').on("click", function() {
+          $("#only").removeAttr('disabled');
+          $(this).prop('disabled',true);
+          $('.not_available').show();
+        });
+
+        $('#only').on("click", function() {
+          $("#all").removeAttr('disabled');
+          $(this).prop('disabled',true);
+          $('.not_available').hide();
+        });
+
+        $('#searchform').submit(function(e) {
+          e.preventDefault(); // avoid to execute the actual submit of the form.
+          var form = $(this);
+          var url = form.attr('action');
+          $.ajax({
+            type: "POST",
+            url: url,
+            data: form.serialize(), // serializes the form's elements.
+            success: function(data)
+            {
+              console.log('results are back');
+              console.log(data);
+              renderResult(data);
             }
           });
         });
