@@ -89,12 +89,31 @@ router.get('/login', function(req, res) {
     //res.redirect('/');
 });
 
-router.get('/result', function(req, res) {
+router.get('/result', async function(req, res) {
     var username = false;
     var userrole = false;
     if (req.user) username = req.user.username;
     if (req.user) userrole = req.user.role;
-    res.render('result', { username : username, userrole : userrole});
+    var checkin_date;
+    var checkout_date;
+    var adults;
+    var children;
+    var queryProvided = false;
+    if (Object.keys(req.query).length != 0) {
+        queryProvided = true;
+        checkin_date = req.query.checkin_date;
+        checkout_date = req.query.checkout_date;
+        adults = req.query.adults;
+        children = req.query.children
+
+    }
+    res.render('result', { username : username, 
+                        userrole : userrole, 
+                        queryProvided : queryProvided,
+                        checkin_date : checkin_date,
+                        checkout_date : checkout_date,
+                        adults : adults,
+                        children :  children});
 });
 
 router.post('/login', passport.authenticate('local'), function(req, res) {
@@ -108,6 +127,13 @@ router.get('/logout', function(req, res) {
 
 router.get('/reservation', function(req, res){
     var username = false;
+    if (req.user) username = req.user.username;
+    if (req.user) name = req.user.name;
+    res.render('reservation', {username: username});
+});
+
+router.post('/reservation', function(req, res){
+    var username = req.body.username;
     if (req.user) username = req.user.username;
     res.render('reservation', {username: username});
 });
@@ -632,6 +658,7 @@ async function getphotosbyroomid(id) {
     return arr;
 }
 
+
 async function editroom(req) {
 
     mysql_db.beginTransaction(async function(err) {
@@ -827,143 +854,7 @@ function enableroombyid(roomid) {
     });
 }
 
-// router.post('/rooms', function(req, res){
 
-//     // var checkin_date = req.body.checkin_date;
-//     unlock = await lock;
-//     // var checkout_date = req.body.checkout_date;
-//     // var adults = req.body.adults;
-//     // var children = req.body.children;
-//     concole.log("in");
-//     var checkin_date = new Date(2019, 9, 10);
-//     var checkout_date = new Date(2019, 9, 14);
-//     var adults = req.body.adults;
-//     var children = req.body.children;
-
-//     // if (err) throw err;
-//     // console.log("Connected!");
-
-//     var rooms;
-//     var sql_room = "select room_id as id, total_num as num, room_price as price " + 
-//             "from hotel_room as hr " + 
-//             "where rooms_availability = true ";
-//     mysql_db.query(sql_room, function (err, result) {
-//         if (err) throw err;
-//         rooms = result
-//         console.log(util.inspect(rooms, false, null, true));
-//         var not_aval_rooms_with_date;
-//         var checkin_str = checkin_date.getFullYear() + '-' + (checkin_date.getMonth() + 1) + '-' + checkin_date.getDate();
-//         var checkout_str = checkout_date.getFullYear() + '-' + (checkout_date.getMonth() + 1) + '-' + checkout_date.getDate();
-//         var sql_notaval = "select rn.room_id as id, rn.not_available_num as num, not_available_date as date " + 
-//                 "from room_not_available_date as rn " + 
-//                 'where not_available_date >= "' + checkin_str +
-//                 '" and not_available_date < "' + checkout_str + '"';
-//         mysql_db.query(sql_notaval, function (err, result) {
-//             if (err) throw err;
-//             not_aval_rooms_with_date = result;
-//             console.log(util.inspect(not_aval_rooms_with_date, false, null, true ));
-//             var dic = {};
-//             for (var i = 0; i < rooms.length; i++) {
-//                 var cur = new Date(checkin_date); 
-//                 dic[rooms[i]["id"]] = {};
-//                 while (cur < checkout_date.getTime()) {
-//                     var tmp = {
-//                         "id" : rooms[i]['id'],
-//                         "total_num" : rooms[i]['num'],
-//                         "notaval_num" : 0,
-//                     };
-//                     // var time = cur.getTime();
-//                     dic[rooms[i]["id"]][cur] = tmp;
-//                     // console.log(cur);
-//                     cur.setDate(cur.getDate() + 1);
-//                 };
-//             }
-//             // console.log(dic);
-
-//             var entries = not_aval_rooms_with_date.slice();
-//             while (entries.length > 0) {
-//                 var e = entries.shift();
-//                 // var time = e['date'].getTime();
-//                 dic[e['id']][e['date']]['notaval_num'] += e['num'];
-//                 // console.log(dic[e['id']]);
-//             }
-//             // console.log(dic);
-//             var collection = db.get('reservations');
-//             var query = { 
-//                 $or : [{
-//                     $and : [ {checkin_date : {$gte : new Date(checkin_date)}}, {checkin_date : {$lt : new Date(checkout_date)}}]
-//                 },{
-//                     $and : [ {checkout_date : {$gt : new Date(checkin_date)}}, {checkout_date : {$lte : new Date(checkout_date)}}]
-//                 },{
-//                     $and : [ {checkin_date : {$lt : new Date(checkin_date)}}, {checkout_date : {$gte: new Date(checkout_date)}}]}
-//                 ] 
-//             };  
-
-            
-
-//             collection.find( query , function(err, reservations){
-//                 if (err) throw err;
-//                 //res.json(videos);
-//                 // console.log(reservations);
-//                 while (reservations.length > 0) {
-//                     var r = reservations.shift();
-//                     var cur = r['checkin_date'];
-//                     if (cur < checkin_date) {
-//                         cur = checkin_date;
-//                     }
-//                     var stop = r['checkout_date'];
-//                     if (stop > checkout_date) {
-//                         stop = checkout_date
-//                     }
-//                     // console.log(r);
-//                     // console.log(cur);
-//                     // console.log(dic[r['room_id']]);
-                    
-//                     while (cur < stop) {
-//                         dic[r['room_id']][cur]['notaval_num'] += 1;
-//                         cur.setDate(cur.getDate() + 1);
-//                     }
-//                     // console.log(cur);
-//                     // console.log(dic[r['room_id']]);
-//                 }
-
-//                 var aval_rooms = []
-
-
-//                 for (var e in dic) {
-//                     var cur = new Date(checkin_date);
-//                     var isAval = true;
-//                     var id;
-//                     while (cur < checkout_date) {
-//                         if (dic[e][cur]['total_num'] - dic[e][cur]['notaval_num'] < 1) {
-//                             isAval = false;
-//                             break;
-//                         }
-//                         cur.setDate(cur.getDate() + 1);
-//                     }
-//                     if (isAval) {
-//                         aval_rooms.push(e);
-//                     }
-//                 }
-//                 console.log(dic);
-//                 console.log(aval_rooms);
-
-//                 var rooms;
-//                 var sql_all_room_type = "select * from room_type";
-//                 var sql_room_detail = "select * from (" +  sql_room + ') as t1 ' 
-//                         + 'left join (' + sql_all_room_type + ') as t2 on t1.id = t2.room_id';
-//                 console.log(sql_room_detail);
-//                 var sql_room_photo = 'select room_id, MIN(photo_id) from room_photo group by room_id';
-//                 var sql_final = sql_room_detail + " left join (" + sql_room_photo + ')';
-//                 mysql_db.query(sql_room_detail, function (err, result) {
-//                     if (err) throw err;
-//                     console.log(result);
-//                     res.json({'boo' : 'foo'});
-//                 });
-//             });
-//         });
-//     });
-// });
 
 
 async function search_available_rooms(checkin_date, checkout_date, adults, children){
@@ -1134,7 +1025,7 @@ async function search_available_rooms(checkin_date, checkout_date, adults, child
     // console.log(room_with_detail);
     // console.log("OBJS: \n");
     // console.log(objs);
-    console.log(aval_rooms);
+    // console.log(aval_rooms);
 
 
     var room_info = {
