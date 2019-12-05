@@ -31,13 +31,22 @@ form {
   border-radius: 5px;
 }
 
-/*.filter .form-group button {
-  float: right;
-}*/
-
-.search-container form {
-	width: 80%
-	padding: 10px 10px 5px;
+.search-container {
+	width: 80%;
+	padding: 20px;
 	background-color: lightsteelblue;
 	border-radius: 5px;
 }
+
+.search-container form {
+/*	height: 100px;*/
+	width: 100%;
+}
+
+.search-container form>div {
+	height: 100%;
+}
+
+.search-container form button {
+	/*background-color: cornflowerblue;
+}*/

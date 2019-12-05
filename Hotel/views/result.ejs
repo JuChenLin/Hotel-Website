@@ -8,7 +8,7 @@
     <meta name="description" content="" />
     <meta name="keywords" content="" />
     <meta name="author" content="" />
-    <link rel="stylesheet" type="text/css" href="//fonts.googleapis.com/css?family=|Roboto+Sans:400,700|Playfair+Display:400,700">
+    <!-- <link rel="stylesheet" type="text/css" href="//fonts.googleapis.com/css?family=|Roboto+Sans:400,700|Playfair+Display:400,700"> -->
 
     <link rel="stylesheet" href="css/bootstrap.min.css">
     <link rel="stylesheet" href="css/animate.css">
@@ -107,96 +107,74 @@
     </section>
 
     <!-- yuantai -->
+
     <section class="py-5 bg-light">
-      <div class="container">
-        <div class="form-wrapper" style="text-align:center;" data-aos="fade-up">
-          <button id="all" class="btn btn-primary btn-block text-white" disabled="">Show All Rooms</button>
-          <button id="only" class="btn btn-primary btn-block text-white">Show Only Available</button>
-        </div>
-        <br/>
-
-          <div class="search-container" >
-            <form action="#" style="width: 80%">
-              <!-- <div class="form-group" style="vertical-align"> -->
-              <!-- <div class="form-inline" style="height: 80%">
-                <div class=" col-md-4 col-lg-4 ">
-                  <select id="bed_type" name="bed_type">
-                    <option value="">Bed Type</option>
-                  </select> &nbsp;
-                </div>
-
-                <div class=" col-md-4 col-lg-4">
-                  <select id="bed_num" name="bed_num">
-                    <option value="">Bed Number</option>
-                  </select> &nbsp;
-                </div> -->
-                <div class="row">
-                <div class="col-md-6 mb-3 mb-md-0 col-lg-3">
-                  <div class="row">
-                    <div class="col-md-6 mb-3 mb-md-0">
-                      <div class="field-icon-wrap">
-                        <div class="icon"><span class="ion-ios-arrow-down"></span></div>
-                        <select name="bed_type" id="bed_type" class="form-control">
-                          <option value="">Bed Type</option>
-                        </select>
-                      </div>
+      <div class="container" align="center">
+       
+        <div class="row search-container form-wrapper" id="next" style="text-align:center;">
+          <!-- <div class="block-32" data-aos="fade-up" data-aos-offset="-200"> -->
+          <form id="searchform" action="/rooms" method="POST" align="center">
+            <div class="row">
+              <div class="col-md-6 mb-3 mb-lg-0 col-lg-3">
+                <div class="field-icon-wrap">
+                    <div class="icon"><span class="ion-ios-arrow-down"></span></div>
+                      <select name="bed_type" id="bed_type" class="form-control">
+                        <option value="1">Bed Type</option>
+                        <option value="2">Twin</option>
+                        <option value="3">Full</option>
+                        <option value="4">Queen</option>
+                        <option value="4">King</option>
+                        <option value="4">California king</option>
+                      </select>
                     </div>
-                    <div class="col-md-6 mb-3 mb-md-0">
-                      <div class="field-icon-wrap">
-                        <div class="icon"><span class="ion-ios-arrow-down"></span></div>
-                        <select name="bed_num" id="bed_num" class="form-control">
-                          <option value="">Bed Number</option>
-                        </select>
-                      </div>
-                    </div>
-                  </div>
-                </div>
-
-                <div class="col-md-6 col-lg-6">
-                  <div class="row">
-                  <div class="col-md-auto">
-                  </div>
-                  <div class="col-md-4 col-lg-4">
-                    <button class="btn btn-outline-secondary" type="submit">Filter</button>
-                  </div>
-                  </div>
-                </div>
-                </div>
-
               </div>
-            </form>
+              <div class="col-md-6 mb-3 mb-lg-0 col-lg-3">
+                <div class="field-icon-wrap">
+                      <div class="icon"><span class="ion-ios-arrow-down"></span></div>
+                      <select name="bed_number" id="children" class="form-control">
+                        <option value="">Bed Type</option>
+                        <option value="2">1</option>
+                        <option value="2">2</option>
+                        <option value="3">3</option>
+                      </select>
+                    </div>
+              </div>
+              <div class="col-md-6 mb-3 mb-md-0 col-lg-3">
+                <button class="btn btn-primary btn-block text-white" id="filter">Filter Room</button>
+              </div>
+              <div class="col-md-6 mb-3 mb-md-0 col-lg-3">
+                <button class="btn btn-primary btn-block text-white" id="available" 
+                        data-toggle="button" aria-pressed="false">Available Only</button>
+              </div>
+            </div>
+          </form>
+<!--           </div> -->
         </div>
         <br/>
 
         <div id="ind_no_result" class="" data-aos="fade-up">
-            <div class="form-wrapper" style="text-align:center;" data-aos="fade-up">
-                <p id="no_res">No Result ...</p>
-                <p id="res_sum"></p>
-            </div>    
+          <div class="form-wrapper" style="text-align:center;" data-aos="fade-up">
+              <p id="no_res">No Result ...</p>
+              <p id="res_sum"></p>
+          </div>    
         </div>
-
         <br/>
 
         <div id="aval_rooms" class="row">
           
             
         </div>
+        <br/>
 
-        <div style="text-align:center;">
-          <div class="pagination"　>
-            <a href="#">&laquo;</a>
-            <a href="#">1</a>
-            <a class="active" href="#">2</a>
-            <a href="#">3</a>
-            <a href="#">4</a>
-            <a href="#">5</a>
-            <a href="#">6</a>
-            <a href="#">&raquo;</a>
+        <div style="text-align:center;" id="pagination">
+          <div class="pagination" id="page_start">
+            <a href="/result/1">&laquo;</a>
+            <a href="#" id="page_end">&raquo;</a>
           </div>
         </div>
       </div>
     </section>
-  
+
     
     <section class="section bg-image overlay" style="background-image: url('images/hero_4.jpg');">
         <div class="container" >
@@ -237,11 +215,19 @@
           $('.room-for-book').remove();
           var dic = {}
           var count = 0;
+          var page = '';
+          var page_count = 0;
+
           for (var i in aval_room) {
             id = aval_room[i];
             dic[id] = true;
             count += 1;
+            page_count = count/9;
+            if (count%9 ==1) { 
+              page += '<a href="/result/' + page_count + '">' + page_count +'</a>'; 
+            }
           }
+
           var isHide = false;
           for (var id in room_with_detail) {
             if (!isHide) $('#no_res').hide();
@@ -264,11 +250,13 @@
               but_dis = 'disabled';
               but_name = 'Sold Out!';
               add_class = 'not_available';
-              if ($("#only").is(":disabled")) {
+              //if ($("#only").is(":disabled")) {   
+              //--Prsiscilla
+              if ($("#available").is(":active")) {
                 // if only disabled, all select
+                // if #avalable active, all select
                 isHide = 'hidden';
               }
-
             }
             if (room[pAddress] == null) pAddress = '';
 
@@ -304,6 +292,8 @@
 
             $('#res_sum').text(count + ' avaliable rooms are found ...');
             $('#aval_rooms').append(entry);
+            $('#page_start').append(page);
+            $("#page_end").attr("src","/results/page_count");
           }
         }
 
@@ -333,20 +323,25 @@
             }
           });
         }
-
-
         
-        $('#all').on("click", function() {
-          $("#only").removeAttr('disabled');
-          $(this).prop('disabled',true);
-          $('.not_available').show();
+        // $('#all').on("click", function() {
+        //   $("#only").removeAttr('disabled');
+        //   $(this).prop('disabled',true);
+        //   $('.not_available').show();
+        // });
+
+        // $('#only').on("click", function() {
+        //   $("#all").removeAttr('disabled');
+        //   $(this).prop('disabled',true);
+        //   $('.not_available').hide();
+        // });
+
+        //Priscilla 
+        $('#avaliable').on("click", function() {
+          // $(this).toggleClass('active');
+          if ($(this).prop("active")) $('.not_available').hide();
         });
 
-        $('#only').on("click", function() {
-          $("#all").removeAttr('disabled');
-          $(this).prop('disabled',true);
-          $('.not_available').hide();
-        });
 
         $('#searchform').submit(function(e) {
           e.preventDefault(); // avoid to execute the actual submit of the form.
