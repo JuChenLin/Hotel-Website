@@ -21,20 +21,24 @@
 				<!-- <div class="image-holder">
 					<img src="images/registration-form-1.jpg" alt="">
 				</div> -->
-                <form method="POST" action="/Edit">
+                <form method="POST" action="/edit">
 					<h3>Edit Room</h3>
+                    <input type="hidden" name="room_id" value="<%=details.room_id %>">
 					<div class="form-wrapper">
                         <input type="text" name="room_name" id="room_name" class="form-control" required>
+                        <input type="text" name="room_feature" id="room_feature" class="form-control" required>
 					</div>
 					<div class="form-group">
                         <input type="number" name="total_num" id="total_num" class="form-control" required>
                         <input type="number" step=0.01 name="room_price" id="room_price" class="form-control" required>
 					</div>
 
-                    <% for(var i=1; i <= beds.length; i++) { %>
+                    <% for(var i=1; i <= 3; i++) { %>
                     <div class="form-group">
-                       
                         <select name="bed_type<%= i %>" id="bed_type<%= i %>" class="form-control">
+                          <% if(i != 1) { %>
+                            <option selected></option>
+                          <% } %>
                           <option value="twin bed">twin bed</option>
                           <option value="full bed">full bed</option>
                           <option value="queen bed">queen bed</option>
@@ -45,6 +49,7 @@
                         <input type="number" name="number_of_beds<%= i %>" id="number_of_beds<%= i %>" class="form-control">
 					</div>
                     <% } %>
+                    
                     <div class="row" style="width: 30%;">
                         <% for(var j=0; j < photos.length; j++) { %>
                         <div>
@@ -64,11 +69,12 @@
     <script>
         $(document).ready(function() {
             $('#room_name').val("<%= details.room_name %>");
+            $('#room_feature').val("<%= details.room_feature %>");
             $('#total_num').val("<%= details.total_num %>");
             $('#room_price').val("<%= details.room_price %>");
             <% for(var k=0; k < beds.length; k++) { %>
                 $('#bed_type<%= k+1 %>').val("<%= beds[k].bed_type %>");
-                $('#number_of_beds1').val("<%= beds[k].number_of_beds %>");
+                $('#number_of_beds<%= k+1 %>').val("<%= beds[k].number_of_beds %>");
             <% } %>
             $('#bed_type1').attr("required", true);
             $('#number_of_beds1').attr("required", true);
