@@ -128,7 +128,7 @@ router.get('/logout', function(req, res) {
 router.get('/reservation', function(req, res){
     var username = false;
     if (req.user) username = req.user.username;
-    if (req.user) name = req.user.name;
+    
     res.render('reservation', {username: username});
 });
 
@@ -337,17 +337,7 @@ router.post('/rooms', async function(req, res){
     out_split[1] = out_split[1].substring(0, out_split[1].length - 1);
     var checkin_date = new Date(parseInt(in_split[2]), month_int[in_split[1]], parseInt(in_split[0]));
     var checkout_date = new Date(parseInt(out_split[2]), month_int[out_split[1]], parseInt(out_split[0]));
-
-    // console.log(checkin_date);
-    // console.log(checkout_date);
-    // console.log(adults);
-    // console.log(children);
-    // var checkin_date = new Date(2019, 9, 10);
-    // var checkout_date = new Date(2019, 9, 14);
-    // var adults = req.body.adults;
-    // var children = req.body.children;
     var result = await search_available_rooms(checkin_date, checkout_date, adults, children);
-    // console.log(util.inspect(result, false, null, true ));
     res.json(result);
 });
 
