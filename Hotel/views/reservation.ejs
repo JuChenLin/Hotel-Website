@@ -54,7 +54,7 @@
         <div class="row">
           <div class="col-md-7" data-aos="fade-up" data-aos-delay="100">
             <img id="photo" src="" alt="" class="img-fluid mb-3">
-            <h2 id="room_name"></h2>
+            <h2 id="name"></h2>
             <p id="feature"></p>
             <form action="/reservation" method="post" class="bg-white p-md-5 p-4 mb-5 border">
               <input type="text" id="img_address" name="img_address" class="form-control" value="" required>
@@ -183,7 +183,7 @@
         var url = window.location.href;
 
         // above form
-        $("#room_name").text(name.toUpperCase());
+        $("#name").text(name.toUpperCase());
         $("#photo").attr('src', pAddress).attr('alt', 'photo of ' + name);
         $("#feature").text(feature);
 
