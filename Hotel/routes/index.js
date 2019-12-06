@@ -185,28 +185,6 @@ router.get('/contact', function(req, res){
     res.render('contact', { username : username });
 });
 
-router.post('/reservation', function(req, res){
-    if(req.user) {
-        search_available_rooms(req);
-    }
-    else{
-        var collection = db.get('tmp_reservation');
-        collection.insert({
-            name: req.body.name,
-            phone: req.body.phone,
-            email: req.body.email,
-            checkin_date: req.body.checkin_date,
-            chekcout_date: req.body.chekcout_date,
-            adults: req.body.adults,
-            children: req.body.children,
-            message: req.body.message
-        }, function(err, video) {
-            if (err) throw err;
-            res.redirect('/reservation');
-        });
-    }
-});
-
 router.get('/edit/:roomid', async function(req, res) {
     var username = false;
     //if(req.user) {
