@@ -226,16 +226,13 @@ insert into room_not_available_date values('ho000001', 3, '2019-10-13', 3);
 insert into room_not_available_date values('ho000001', 4, '2019-10-12', 4);
 insert into room_not_available_date values('ho000001', 6, '2019-10-10', 2);
 insert into room_not_available_date values('ho000001', 10, '2019-10-10', 2);
+insert into room_not_available_date values('ho000001', 13, '2019-12-15', 1);
 
 
 -- photo (photo_id, photo_address)
-insert into photo values(1, '/public/room_photo/room-vgsynhtg.jpg');
-insert into photo values(2, '/public/room_photo/room-dvbiquc.jpg');
-
+INSERT INTO `photo` VALUES (1,'/room_photo/room-cvfdmj.jpg'),(2,'/room_photo/room-epyhggnx.jpg'),(3,'/room_photo/room-dqgabytl.jpg'),(4,'/room_photo/room-djtjfzhi.jpg'),(5,'/room_photo/room-yvvid.jpg'),(6,'/room_photo/room-fofrwxz.jpg'),(7,'/room_photo/room-cxncdtsh.jpg'),(8,'/room_photo/room-lrebxenm.jpg'),(9,'/room_photo/room-ekmnfrxq.jpg'),(10,'/room_photo/room-ghobwsi.jpg'),(11,'/room_photo/room-gmaspos.jpg'),(12,'/room_photo/room-yszpbosm.jpg'),(13,'/room_photo/room-rpedcmtq.jpg'),(14,'/room_photo/room-yzrcrxqq.jpg'),(15,'/room_photo/room-xkerudwn.jpg'),(16,'/room_photo/room-lbcudgct.jpg'),(17,'/room_photo/room-lalello.jpg'),(18,'/room_photo/room-lxfjumzb.jpg'),(19,'/room_photo/room-ylewlsfc.jpg'),(20,'/room_photo/room-dwmrtzo.jpg');
 -- room_photo (room_id, photo_id)
-insert into room_photo values(1, 1);
-insert into room_photo values(1, 2);
-
+INSERT INTO `room_photo` VALUES (1,1),(2,2),(3,3),(4,4),(5,5),(6,6),(7,7),(8,8),(9,9),(10,10),(10,11),(10,12),(11,13),(12,14),(12,15),(12,16),(13,17),(13,18),(14,19),(14,20);
 -- part 4. procedures
 
 

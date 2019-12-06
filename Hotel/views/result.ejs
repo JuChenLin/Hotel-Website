@@ -266,12 +266,12 @@
                 isHide = 'hidden';
               }
             }
-            if (room[pAddress] == null) pAddress = '';
+            if (pAddress == null) pAddress = '';
 
             entry += '<div class="room-for-book col-md-6 col-lg-4 mb-5 ' + add_class + '" data-aos="fade-up" ' + isHide + '>' + 
                         '<div>' + 
                           '<figure class="img-wrap">' + 
-                            '<img src="' + room[pAddress] + '" alt="picture of ' + room['name'] + '" class="img-fluid mb-3">' +
+                            '<img src="' + pAddress + '" alt="picture of ' + room['name'] + '" class="img-fluid mb-3">' +
                           '</figure>' + 
                           '<div class="p-3 text-center room-info">' + 
                             '<h2>' + room['name'].toUpperCase() + '</h2>' + 
@@ -288,7 +288,7 @@
                             '<input type="hidden" name="name" value=' + room['name'] + '>' +
                             '<input type="hidden" name="price" value=' + room['price'] + '>' +
                             '<input type="hidden" name="feature" value="' + room['feature'] + '">' +
-                            '<input type="hidden" name="pAddress" value="' + room['pAddress'] + '">' +
+                            '<input type="hidden" name="pAddress" value="' + pAddress + '">' +
                             '<button class="btn btn-' + but_color + '" type="submit" form="form'+ id + '" ' + but_dis + '>' + but_name + '</button>' + 
                           '</form>' + 
                           '<% if (userrole) { %>' + 
