@@ -54,10 +54,16 @@
         <div class="row">
           <div class="col-md-7" data-aos="fade-up" data-aos-delay="100">
             <img id="photo" src="" alt="" class="img-fluid mb-3">
-            <h2 id="h_name"></h2>
+            <h2 id="room_name"></h2>
             <p id="feature"></p>
             <form action="/reservation" method="post" class="bg-white p-md-5 p-4 mb-5 border">
-              <input type="text" id="name" class="form-control" required>
+              <input type="text" id="img_address" name="img_address" class="form-control" value="" required>
+              <input type="text" id="room_name" name="room_name" class="form-control" value="" required>
+              <input type="text" id="hotel_id" name="hotel_id" class="form-control" value="" required>
+              <input type="text" id="room_id" name="room_id" class="form-control" value="" required>
+              <input type="text" id="reservation_date" name="reservation_date" class="form-control" value='' required>
+              <input type="text" id="price" name="price" class="form-control" value='' required>
+              <input type="text" id="url" name="url" class="form-control" value='' required>
               <div class="row">
                 <div class="col-md-6 form-group">
                   <label class="text-black font-weight-bold" for="name">Username</label>
@@ -117,12 +123,14 @@
                   <textarea name="message" id="message" class="form-control " cols="30" rows="8"></textarea>
                 </div>
               </div>
+              <p id='reserve_date'></p>
               <div class="row">
                 <div class="col-md-6 form-group">
                   <input type="submit" value="Reserve Now" class="btn btn-primary text-white py-3 px-5 font-weight-bold">
                 </div>
               </div>
             </form>
+            
 
           </div>
           <div class="col-md-5" data-aos="fade-up" data-aos-delay="200">
@@ -167,16 +175,38 @@
         var feature = urlParams.get('feature');
         var price = urlParams.get('price');
         var pAddress = urlParams.get('pAddress');
+        var room_id = urlParams.get('id');
+        var hotel_id = 'ho000001';
+        var today = new Date();
+        var today_str = today.getFullYear() + '/' + today.getMonth() + '/' + today.getDate();
 
-        $("#name").val(name).prop( "hidden", true );
-        $("#checkin_date").val(checkin_date).prop( "disabled", true );
-        $("#checkout_date").val(checkout_date).prop( "disabled", true );
-        $("#adults").val(adults).prop( "disabled", true );
-        $("#children").val(children).prop( "disabled", true );
-        $("#username").prop( "disabled", true );
-        $("#h_name").text(name.toUpperCase());
-        $("#photo").attr('src', '/' + pAddress).attr('alt', 'photo of ' + name);
+        var url = window.location.href;
+
+        // above form
+        $("#room_name").text(name.toUpperCase());
+        $("#photo").attr('src', pAddress).attr('alt', 'photo of ' + name);
         $("#feature").text(feature);
+
+
+        // form
+        $("#img_address").val(pAddress).hide();
+        $("#room_name").val(name).hide();
+        $("#hotel_id").val(hotel_id).hide();
+        $("#room_id").val(room_id).hide();
+        $("#reservation_date").val(today_str).hide();
+        $("#price").val(price).hide();
+        $("#url").val(url).hide();
+
+        $("#username").attr('readonly', true);
+        $("#checkin_date").val(checkin_date).attr('readonly', true);
+        $("#checkout_date").val(checkout_date).attr('readonly', true);
+        $("#adults").val(adults).attr('readonly', true);
+        $("#children").val(children).attr('readonly', true);
+
+        // below form
+        $("#reserve_date").text('Date: ' + today);
+        
+        
 
       });
     </script>

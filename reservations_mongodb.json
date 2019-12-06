@@ -1,0 +1,33 @@
+
+{
+    "checkin_date" : ISODate("2019-12-01T06:00:00.000Z"),
+    "checkout_date" : ISODate("2019-12-05T06:00:00.000Z"),
+    "reservation_date" : ISODate("2019-12-05T06:00:00.000Z"),
+    "adults" : "1",
+    "children" : "1",
+    "hotel_id" : "ho000001",
+    "room_id" : "2",
+    "email" : "waynefyt75@gmail.com",
+    "price" : "100",
+    "message" : "asdf",
+    "username" : "wayne",
+    "room_name" : "standard room",
+    "img_address" : "/room_photo/room-epyhggnx.jpg"
+}
+
+
+{
+    "checkin_date" : ISODate("2019-12-01T06:00:00.000Z"),
+    "checkout_date" : ISODate("2019-12-05T06:00:00.000Z"),
+    "reservation_date" : ISODate("2019-12-05T06:00:00.000Z"),
+    "adults" : "1",
+    "children" : "1",
+    "hotel_id" : "ho000001",
+    "room_id" : "13",
+    "email" : "waynefyt75@gmail.com",
+    "price" : "3000",
+    "message" : "asdf",
+    "username" : "wayne",
+    "room_name" : "presidential suite",
+    "img_address" : "/room_photo/room-lalello.jpg"
+}

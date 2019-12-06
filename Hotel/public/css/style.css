@@ -1281,7 +1281,6 @@ textarea.searchform-control {
         color: #fff;
         border-radius: 50%; }
 
-
 .pagination a {
   margin: 0 4px; /* 0 is for top and bottom. Feel free to change it */
 }
@@ -1289,3 +1288,9 @@ textarea.searchform-control {
 .center {
   text-align: center;
 }
+
+.room-img {
+    width: 350px;
+    height: 230px !important;
+}
+

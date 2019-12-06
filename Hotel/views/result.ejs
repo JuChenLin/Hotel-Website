@@ -97,7 +97,7 @@
                   </div>
                 </div>
                 <div class="col-md-6 col-lg-3 align-self-end">
-                  <button class="btn btn-primary btn-block text-white">Check Availabilty</button>
+                  <button id="checkavailable" class="btn btn-primary btn-block text-white">Check Availabilty</button>
                 </div>
               </div>
             </form>
@@ -158,6 +158,49 @@
           <button id="only" class="btn btn-primary btn-block text-white">Show Only Available</button>
         </div>
         <br/>
+       
+
+        <% if (!userrole) { %> 
+        <div class="modal fade" id="loginModal" tabindex="-1" role="dialog" aria-labelledby="loginModalLabel" aria-hidden="true">
+        <div class="modal-dialog" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="delModalLabel">Please login first</h5>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <div class="modal-body">
+                    Please login or sign up first.
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                    <a href="/login" class="btn btn-success">Login</a>
+                </div>
+            </div>
+        </div>
+    </div>
+    <% } %>
+
+    <div class="modal fade" id="invalidsearchModal" tabindex="-1" role="dialog" aria-labelledby="invalidsearchModalLabel" aria-hidden="true">
+        <div class="modal-dialog" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="delModalLabel">Invalid search</h5>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <div class="modal-body">
+                    Please search a valid date
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
         <!-- ---------- -->
 
         <div id="ind_no_result" class="" data-aos="fade-up">
@@ -215,6 +258,30 @@
 
     <script type="text/javascript">
       // yuantai fu
+      function checkdate(){
+          var months = {"January": "00", "February": "01", "March": "02", "April": "03", "May": "04", "June": "05", "July": "06", "August": "07", "September": "08", "October": "09", "November": "10", "December": "11" }
+          var checkin_date = $('#checkin_date').val();
+          var date_str = checkin_date.split(' ');
+          var day = date_str[0];
+          var month = months[date_str[1].replace(",", "")];
+          var year = date_str[2];
+          var checkinDate = new Date(year, month, day);
+
+          var checkout_date = $('#checkout_date').val();
+          var date_str = checkout_date.split(' ');
+          var day = date_str[0];
+          var month = months[date_str[1].replace(",", "")];
+          var year = date_str[2];
+          var checkoutDate = new Date(year, month, day);
+
+          var todayDate = new Date();
+
+          if ((checkoutDate > checkinDate) && (checkoutDate > todayDate) && (checkinDate > todayDate)) {
+              return true
+          }
+          $('#invalidsearchModal').modal('show');
+          return false;
+      }
       $( document ).ready(function() { 
         function renderResult(data) {
           var aval_room = data["aval_room"];
@@ -282,7 +349,7 @@
             entry += '<div class="room-for-book col-md-6 col-lg-4 mb-5 ' + add_class + '" data-aos="fade-up" ' + isHide + '>' + 
                         '<div>' + 
                           '<figure class="img-wrap">' + 
-                            '<img src="' + pAddress + '" alt="picture of ' + room['name'] + '" class="img-fluid mb-3">' +
+                            '<img class="room-img" src="' + pAddress + '" alt="picture of ' + room['name'] + '" class="img-fluid mb-3">' +
                           '</figure>' + 
                           '<div class="p-3 text-center room-info">' + 
                             '<h2>' + room['name'].toUpperCase() + '</h2>' + 
@@ -300,13 +367,13 @@
                             '<input type="hidden" name="price" value=' + room['price'] + '>' +
                             '<input type="hidden" name="feature" value="' + room['feature'] + '">' +
                             '<input type="hidden" name="pAddress" value="' + pAddress + '">' +
+                            <% if (username) { %>
                             '<button class="btn btn-' + but_color + '" type="submit" form="form'+ id + '" ' + but_dis + '>' + but_name + '</button>' + 
+                            <% } else { %>
+                            '<button class="btn btn-' + but_color + '" type="button" data-toggle="modal" data-target="#loginModal">' + but_name + '</button>' + 
+                            <% } %>
                           '</form>' + 
-                          '<% if (userrole) { %>' + 
-                          '<a class="btn btn-secondary" href="/edit" role="button"> Edit </a>' +
-                          '<a class="btn btn-secondary" href="#" role="button"> Delet </a>' +
-                          '<% } %>' + 
-                        '</div>' + 
+                          '</div>' + 
                       '</div>';
 
             $('#res_sum').text(count_available + ' avaliable rooms are found ...');
@@ -335,7 +402,6 @@
           $('#checkout_date').val("<%= checkout_date%>");
           $("#adults").val(<%= adults%>);
           $("#children").val(<%= children%>);
-          console.log("in");
           var form = $('#searchform');
           var url = form.attr('action');
           $.ajax({
@@ -383,19 +449,22 @@
 
         $('#searchform').submit(function(e) {
           e.preventDefault(); // avoid to execute the actual submit of the form.
-          var form = $(this);
-          var url = form.attr('action');
-          $.ajax({
-            type: "POST",
-            url: url,
-            data: form.serialize(), // serializes the form's elements.
-            success: function(data)
-            {
-              console.log('results are back');
-              console.log(data);
-              renderResult(data);
-            }
-          });
+          //Eric
+          if (checkdate()) {
+              var form = $(this);
+              var url = form.attr('action');
+              $.ajax({
+                type: "POST",
+                url: url,
+                data: form.serialize(), // serializes the form's elements.
+                success: function(data)
+                {
+                  console.log('results are back');
+                  console.log(data);
+                  renderResult(data);
+                }
+              });
+          }
         });
       });
     </script>

@@ -50,27 +50,25 @@
     </section>
     <!-- END section -->
 
-    <section class="section pb-4">
+    <section class="section bg-light pb-0"  >
       <div class="container">
-       
         <div class="row check-availabilty" id="next">
           <div class="block-32" data-aos="fade-up" data-aos-offset="-200">
-            <form action="#">
-            <form action="/reservation" method="POST">
-              <div> <p> Interested? Check Availability of This Room </p></div>
+
+            <form id="searchform" action="/result" method="GET">
               <div class="row">
                 <div class="col-md-6 mb-3 mb-lg-0 col-lg-3">
                   <label for="checkin_date" class="font-weight-bold text-black">Check In</label>
                   <div class="field-icon-wrap">
                     <div class="icon"><span class="icon-calendar"></span></div>
-                    <input type="text" id="checkin_date" class="form-control">
+                    <input type="text" id="checkin_date" name="checkin_date" class="form-control">
                   </div>
                 </div>
                 <div class="col-md-6 mb-3 mb-lg-0 col-lg-3">
                   <label for="checkout_date" class="font-weight-bold text-black">Check Out</label>
                   <div class="field-icon-wrap">
                     <div class="icon"><span class="icon-calendar"></span></div>
-                    <input type="text" id="checkout_date" class="form-control">
+                    <input type="text" id="checkout_date" name="checkout_date" class="form-control">
                   </div>
                 </div>
                 <div class="col-md-6 mb-3 mb-md-0 col-lg-3">
@@ -79,11 +77,11 @@
                       <label for="adults" class="font-weight-bold text-black">Adults</label>
                       <div class="field-icon-wrap">
                         <div class="icon"><span class="ion-ios-arrow-down"></span></div>
-                        <select name="" id="adults" class="form-control">
-                          <option value="">1</option>
-                          <option value="">2</option>
-                          <option value="">3</option>
-                          <option value="">4+</option>
+                        <select  id="adults" name="adults" class="form-control">
+                          <option value="1">1</option>
+                          <option value="2">2</option>
+                          <option value="3">3</option>
+                          <option value="4">4+</option>
                         </select>
                       </div>
                     </div>
@@ -91,18 +89,18 @@
                       <label for="children" class="font-weight-bold text-black">Children</label>
                       <div class="field-icon-wrap">
                         <div class="icon"><span class="ion-ios-arrow-down"></span></div>
-                        <select name="" id="children" class="form-control">
-                          <option value="">1</option>
-                          <option value="">2</option>
-                          <option value="">3</option>
-                          <option value="">4+</option>
+                        <select id="children" name="children" class="form-control">
+                          <option value="1">1</option>
+                          <option value="2">2</option>
+                          <option value="3">3</option>
+                          <option value="4">4+</option>
                         </select>
                       </div>
                     </div>
                   </div>
                 </div>
                 <div class="col-md-6 col-lg-3 align-self-end">
-                  <button type="submit" class="btn btn-primary btn-block text-white">Check Availabilty</button>
+                  <button class="btn btn-primary btn-block text-white">Check Availabilty</button>
                 </div>
               </div>
             </form>
@@ -130,9 +128,9 @@
                 <a href="/room/<%= rooms[i].room_id %>" class="room">
                     <figure class="img-wrap">
                         <% if (rooms[i].rooms_availability) { %>
-                        <img src="<%= rooms[i].photo_address %>" alt="Free website template" class="img-fluid mb-3">
+                        <img class="room-img" src="<%= rooms[i].photo_address %>" alt="Free website template" class="img-fluid mb-3">
                         <% } else { %>
-                        <img src="<%= rooms[i].photo_address %>" alt="Free website template" class="img-fluid mb-3" style="filter: grayscale(100%);">
+                        <img class="room-img" src="<%= rooms[i].photo_address %>" alt="Free website template" class="img-fluid mb-3" style="filter: grayscale(100%);">
                         <% } %>
                     </figure>
                     <div class="p-3 text-center room-info">
@@ -253,6 +251,25 @@
         </div>
     </div>
     
+    <div class="modal fade" id="invalidsearchModal" tabindex="-1" role="dialog" aria-labelledby="invalidsearchModalLabel" aria-hidden="true">
+        <div class="modal-dialog" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="delModalLabel">Invalid search</h5>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <div class="modal-body">
+                    Please search a valid date
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
     <form action="/delete" id="delete" method="POST">
         <input type="hidden" name="room_id" id="rm_room_id" value="">
     </form>
@@ -283,6 +300,13 @@
     <script src="js/main.js"></script>
     <script>
         $(document).ready(function(){
+            $('#searchform').submit(function(e) {
+                e.preventDefault(); // avoid to execute the actual submit of the form.
+                //Eric
+                if (checkdate()) {
+                    this.submit();
+                }
+            });
             <% if (userrole) { %>
             $("#proceed").click(function(){        
                 $("#delete").submit(); // Submit the form
@@ -302,6 +326,31 @@
             console.log($('#rm_room_id').val());
             console.log($('#en_room_id').val());
         }
+        function checkdate(){
+          var months = {"January": "00", "February": "01", "March": "02", "April": "03", "May": "04", "June": "05", "July": "06", "August": "07", "September": "08", "October": "09", "November": "10", "December": "11" }
+          var checkin_date = $('#checkin_date').val();
+          var date_str = checkin_date.split(' ');
+          var day = date_str[0];
+          var month = months[date_str[1].replace(",", "")];
+          var year = date_str[2];
+          var checkinDate = new Date(year, month, day);
+
+          var checkout_date = $('#checkout_date').val();
+          var date_str = checkout_date.split(' ');
+          var day = date_str[0];
+          var month = months[date_str[1].replace(",", "")];
+          var year = date_str[2];
+          var checkoutDate = new Date(year, month, day);
+
+          var todayDate = new Date();
+
+          if ((checkoutDate > checkinDate) && (checkoutDate > todayDate) && (checkinDate > todayDate)) {
+              return true
+          }
+          $('#invalidsearchModal').modal('show');
+          return false;
+      }
+
     </script>
 
   </body>

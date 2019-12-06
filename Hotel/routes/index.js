@@ -1,7 +1,7 @@
 var express = require('express');
 var router = express.Router();
 var monk = require('monk');
-var db = monk('localhost:27017/Hotel');
+var db = monk('localhost:27017/hotel');
 var mysql = require('mysql');
 var mysql_db = mysql.createConnection({
     host: "localhost",
@@ -62,8 +62,10 @@ router.get('/', function(req, res) {
 
 router.get('/index', function(req, res){
     var username = false;
-    if (req.user) username = req.user.username;
-    console.log(username);
+    var userrole = false;
+    if (req.user) {
+        username = req.user.username;
+    }
     res.render('index', { username : username });
 });
 
@@ -175,7 +177,57 @@ router.get('/reservation', function(req, res){
 router.post('/reservation', function(req, res){
     var username = req.body.username;
     if (req.user) username = req.user.username;
-    res.render('reservation', {username: username});
+    console.log('-------------------------------------------post-------------------------------------------')
+    console.log(req.body);
+    
+    var cid = req.body.checkin_date;
+    var in_split = cid.split(' ');
+    in_split[1] = in_split[1].substring(0, in_split[1].length - 1);
+    var checkin_date = new Date(parseInt(in_split[2]), month_int[in_split[1]], parseInt(in_split[0]));
+    
+    var cod = req.body.checkout_date;
+    var out_split = cod.split(' ');
+    out_split[1] = out_split[1].substring(0, out_split[1].length - 1);
+    var checkout_date = new Date(parseInt(out_split[2]), month_int[out_split[1]], parseInt(out_split[0]));
+
+    var rsd = req.body.reservation_date;
+    console.log(rsd);
+    var rsd_split = rsd.split('/');
+    console.log(rsd);
+    var reservation_date = new Date(rsd_split[0], rsd_split[1], rsd_split[2]);
+    console.log(reservation_date);
+    var adults = req.body.adults;
+    var children = req.body.children;
+    var room_id = req.body.room_id;
+    var hotel_id = req.body.hotel_id;
+    var email = req.body.email;
+    var message = req.body.message;
+    var username = req.body.username;
+    var room_id = req.body.room_id;
+    var price = req.body.price;
+    var room_name = req.body.room_name;
+    var img_address = req.body.img_address;
+
+
+    var collection = db.get('reservations');
+    collection.insert({
+        checkin_date: checkin_date,
+        checkout_date: checkout_date,
+        reservation_date: reservation_date,
+        adults: adults,
+        children: children,
+        hotel_id: hotel_id,
+        room_id: room_id,
+        email: email,
+        price: price,
+        message: message,
+        username: username,
+        room_name: room_name,
+        img_address: img_address
+    }, function(err, video) {
+        if (err) throw err;
+        res.redirect('/');
+    });
 });
 
 router.get('/rooms/:page', async function(req, res){
@@ -265,67 +317,43 @@ router.get('/contact', function(req, res){
     res.render('contact', { username : username });
 });
 
-router.post('/reservation', function(req, res){
-    if(req.user) {
-        search_available_rooms(req);
-    }
-    else{
-        var collection = db.get('tmp_reservation');
-        collection.insert({
-            name: req.body.name,
-            phone: req.body.phone,
-            email: req.body.email,
-            checkin_date: req.body.checkin_date,
-            chekcout_date: req.body.chekcout_date,
-            adults: req.body.adults,
-            children: req.body.children,
-            message: req.body.message
-        }, function(err, video) {
-            if (err) throw err;
-            res.redirect('/reservation');
-        });
-    }
-});
-
 router.get('/edit/:roomid', async function(req, res) {
     var username = false;
-    //if(req.user) {
-    //    if (req.user.role) {
+    if(req.user) {
+        if (req.user.role) {
             var details = await getroomdetailbyid(req.params.roomid);
             var beds = await getbedsbyroomid(req.params.roomid);
             //var beds = false;
             var photos = await getphotosbyroomid(req.params.roomid);
             res.render('edit', { username : username, details: details, beds: beds, photos: photos});
-    //    } 
-    //    else {
-    //        res.redirect('/room/'+req.params.roomid);
-    //    }
-    //} 
-    //else {
-    //    res.redirect('/room/'+req.params.roomid);
-    //}    //console.log(username);
+        } 
+        else {
+            res.redirect('/rooms');
+        }
+    } 
+    else {
+        res.redirect('/rooms');
+    }
 });
 
 router.post('/edit', async function(req, res) {
     //console.log(req.params.room_id);
-    var photos = await editroom(req);
+    //var photos = await editroom(req);
     //console.log(req.originalUrl);
     //res.redirect('/room/'+req.body.room_id);
-    res.redirect('/rooms');
-    /*
+    //res.redirect('/rooms');
     if(req.user) {
         if (req.user.role) {
-            var photos = await editroom(req);
-            res.redirect('/room/'+req.body.roomid);
+            var wait = await editroom(req);
+            res.redirect('/rooms');
         } 
         else {
-            res.redirect('/room/'+req.body.roomid);
+            res.redirect('/rooms');
         }
     } 
     else {
-        res.redirect('/room/'+req.body.roomid);
-        }
-    */
+            res.redirect('/rooms');
+    }
 });
 
 router.post('/delete', async function(req, res) {
@@ -430,12 +458,29 @@ router.post('/rooms', async function(req, res){
     // console.log(util.inspect(result, false, null, true ));
     res.json(result);
 });
-
-router.get('/member', function(req, res){
+// now
+router.get('/member', async function(req, res){
     var username = false;
     if (req.user) username = req.user.username;
+    console.log("----------------------------" + username + "----------------------------");
     console.log(username);
-    res.render('member', { username : username });
+
+    var collection = db.get('reservations');
+    var query = {
+        username: username
+    };
+    
+    collection.find( query , function(err, result){
+        if (err) throw err;
+        user = result;     
+        console.log('-------------------------------------result-------------------------------------');     
+        console.log(result);
+
+
+
+        res.render('member', { username : username, result : result});
+    });
+
 });
 
 
@@ -970,6 +1015,8 @@ async function search_available_rooms(checkin_date, checkout_date, adults, child
     let unlock2 = await lock2;
     // console.log(util.inspect(not_aval_rooms_with_date, false, null, true ));
 
+
+    // dic to store all room condition with all date
     var dic = {};
     for (var i = 0; i < rooms.length; i++) {
         var cur = new Date(checkin_date); 
@@ -981,7 +1028,7 @@ async function search_available_rooms(checkin_date, checkout_date, adults, child
                 "notaval_num" : 0,
             };
             // var time = cur.getTime();
-            dic[rooms[i]["id"]][cur] = tmp;
+            dic[rooms[i]["id"]][cur.toISOString()] = tmp;
             // console.log(cur);
             cur.setDate(cur.getDate() + 1);
         };
@@ -992,10 +1039,11 @@ async function search_available_rooms(checkin_date, checkout_date, adults, child
     while (entries.length > 0) {
         var e = entries.shift();
         // var time = e['date'].getTime();
-        dic[e['id']][e['date']]['notaval_num'] += e['num'];
+        // console.log(e['date']);
+        dic[e['id']][e['date'].toISOString()]['notaval_num'] += e['num'];
         // console.log(dic[e['id']]);
     }
-    // console.log(dic);
+    console.log(dic);
     
 
     var reservations;
@@ -1019,7 +1067,7 @@ async function search_available_rooms(checkin_date, checkout_date, adults, child
     let unlock3 = await lock3;
     
     //res.json(videos);
-    // console.log(reservations);
+    console.log(reservations);
     while (reservations.length > 0) {
         var r = reservations.shift();
         var cur = r['checkin_date'];
@@ -1030,13 +1078,23 @@ async function search_available_rooms(checkin_date, checkout_date, adults, child
         if (stop > checkout_date) {
             stop = checkout_date
         }
+        // console.log("r: ");
         // console.log(r);
         // console.log(cur);
         // console.log(dic[r['room_id']]);
-        
+        // here
         while (cur < stop) {
-            dic[r['room_id']][cur]['notaval_num'] += 1;
+            // console.log('time: ');
+            // console.log(cur.toISOString());
+            // console.log('dic');
+            // console.log(dic[r['room_id']]);
+            // console.log(r['room_id']);
+            // console.log('dic222');
+            // console.log(dic[r['room_id']]);
+            dic[r['room_id']][cur.toISOString()]['notaval_num'] += 1;
             cur.setDate(cur.getDate() + 1);
+            // console.log('here');
+            // console.log(dic[r['room_id']]);
         }
         // console.log(cur);
         // console.log(dic[r['room_id']]);
@@ -1051,7 +1109,7 @@ async function search_available_rooms(checkin_date, checkout_date, adults, child
         var isAval = true;
         var id;
         while (cur < checkout_date) {
-            if (dic[e][cur]['total_num'] - dic[e][cur]['notaval_num'] < 1) {
+            if (dic[e][cur.toISOString()]['total_num'] - dic[e][cur.toISOString()]['notaval_num'] < 1) {
                 isAval = false;
                 break;
             }
