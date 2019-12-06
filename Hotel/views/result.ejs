@@ -182,6 +182,25 @@
     </div>
     <% } %>
 
+    <div class="modal fade" id="invalidsearchModal" tabindex="-1" role="dialog" aria-labelledby="invalidsearchModalLabel" aria-hidden="true">
+        <div class="modal-dialog" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="delModalLabel">Invalid search</h5>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <div class="modal-body">
+                    Please search a valid date
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
         <!-- ---------- -->
 
         <div id="ind_no_result" class="" data-aos="fade-up">
@@ -240,7 +259,7 @@
     <script type="text/javascript">
       // yuantai fu
       function checkdate(){
-          var months = {"January": "01", "February": "02", "March": "03", "April": "04", "May": "05", "June": "06", "July": "07", "August": "08", "September": "09", "October": "10", "November": "11", "December": "12" }
+          var months = {"January": "00", "February": "01", "March": "02", "April": "03", "May": "04", "June": "05", "July": "06", "August": "07", "September": "08", "October": "09", "November": "10", "December": "11" }
           var checkin_date = $('#checkin_date').val();
           var date_str = checkin_date.split(' ');
           var day = date_str[0];
@@ -256,12 +275,12 @@
           var checkoutDate = new Date(year, month, day);
 
           var todayDate = new Date();
-          
+
           if ((checkoutDate > checkinDate) && (checkoutDate > todayDate) && (checkinDate > todayDate)) {
               return true
           }
-          
-          return true;
+          $('#invalidsearchModal').modal('show');
+          return false;
       }
       $( document ).ready(function() { 
         function renderResult(data) {
@@ -412,22 +431,21 @@
         $('#searchform').submit(function(e) {
           e.preventDefault(); // avoid to execute the actual submit of the form.
           //Eric
-          if (!checkdate())
-            return false;
-          // 
-          var form = $(this);
-          var url = form.attr('action');
-          $.ajax({
-            type: "POST",
-            url: url,
-            data: form.serialize(), // serializes the form's elements.
-            success: function(data)
-            {
-              console.log('results are back');
-              console.log(data);
-              renderResult(data);
-            }
-          });
+          if (checkdate()) {
+              var form = $(this);
+              var url = form.attr('action');
+              $.ajax({
+                type: "POST",
+                url: url,
+                data: form.serialize(), // serializes the form's elements.
+                success: function(data)
+                {
+                  console.log('results are back');
+                  console.log(data);
+                  renderResult(data);
+                }
+              });
+          }
         });
       });
     </script>

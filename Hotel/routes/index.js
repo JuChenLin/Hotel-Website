@@ -65,7 +65,7 @@ router.get('/index', function(req, res){
     if (req.user) {
         username = req.user.username;
     }
-    res.render('index', { username : username, userrole: userrole });
+    res.render('index', { username : username });
 });
 
 router.get('/register', function(req, res) {
@@ -151,6 +151,7 @@ router.post('/reservation', function(req, res){
     var checkout_date = new Date(parseInt(out_split[2]), month_int[out_split[1]], parseInt(out_split[0]));
 
     var rsd = req.body.reservation_date;
+    console.log(rsd);
     var rsd_split = rsd.split('/');
     console.log(rsd);
     var reservation_date = new Date(rsd_split[0], rsd_split[1], rsd_split[2]);
