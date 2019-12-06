@@ -131,9 +131,9 @@
                 <a href="/room/<%= rooms[i].room_id %>" class="room">
                     <figure class="img-wrap">
                         <% if (rooms[i].rooms_availability) { %>
-                        <img src="<%= rooms[i].photo_address %>" alt="Free website template" class="img-fluid mb-3">
+                        <img class="room-img" src="<%= rooms[i].photo_address %>" alt="Free website template" class="img-fluid mb-3">
                         <% } else { %>
-                        <img src="<%= rooms[i].photo_address %>" alt="Free website template" class="img-fluid mb-3" style="filter: grayscale(100%);">
+                        <img class="room-img" src="<%= rooms[i].photo_address %>" alt="Free website template" class="img-fluid mb-3" style="filter: grayscale(100%);">
                         <% } %>
                     </figure>
                     <div class="p-3 text-center room-info">

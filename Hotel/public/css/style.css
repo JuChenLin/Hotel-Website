@@ -1281,7 +1281,7 @@ textarea.form-control {
         color: #fff;
         border-radius: 50%; }
 
-img {
+.room-img {
     width: 350px;
     height: 230px !important;
 }

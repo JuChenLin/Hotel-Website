@@ -61,9 +61,10 @@ router.get('/', function(req, res) {
 
 router.get('/index', function(req, res){
     var username = false;
-    if (req.user) username = req.user.username;
-    console.log(username);
-    res.render('index', { username : username });
+    if (req.user) {
+        username = req.user.username;
+    }
+    res.render('index', { username : username, userrole: userrole });
 });
 
 router.get('/register', function(req, res) {
@@ -187,43 +188,41 @@ router.get('/contact', function(req, res){
 
 router.get('/edit/:roomid', async function(req, res) {
     var username = false;
-    //if(req.user) {
-    //    if (req.user.role) {
+    if(req.user) {
+        if (req.user.role) {
             var details = await getroomdetailbyid(req.params.roomid);
             var beds = await getbedsbyroomid(req.params.roomid);
             //var beds = false;
             var photos = await getphotosbyroomid(req.params.roomid);
             res.render('edit', { username : username, details: details, beds: beds, photos: photos});
-    //    } 
-    //    else {
-    //        res.redirect('/room/'+req.params.roomid);
-    //    }
-    //} 
-    //else {
-    //    res.redirect('/room/'+req.params.roomid);
-    //}    //console.log(username);
+        } 
+        else {
+            res.redirect('/rooms');
+        }
+    } 
+    else {
+        res.redirect('/rooms');
+    }
 });
 
 router.post('/edit', async function(req, res) {
     //console.log(req.params.room_id);
-    var photos = await editroom(req);
+    //var photos = await editroom(req);
     //console.log(req.originalUrl);
     //res.redirect('/room/'+req.body.room_id);
-    res.redirect('/rooms');
-    /*
+    //res.redirect('/rooms');
     if(req.user) {
         if (req.user.role) {
-            var photos = await editroom(req);
-            res.redirect('/room/'+req.body.roomid);
+            var wait = await editroom(req);
+            res.redirect('/rooms');
         } 
         else {
-            res.redirect('/room/'+req.body.roomid);
+            res.redirect('/rooms');
         }
     } 
     else {
-        res.redirect('/room/'+req.body.roomid);
-        }
-    */
+            res.redirect('/rooms');
+    }
 });
 
 router.post('/delete', async function(req, res) {
