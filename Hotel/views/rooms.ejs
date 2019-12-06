@@ -157,7 +157,7 @@
         </div>
       
 
-      </div style="text-align:center;">
+      <div style="text-align:center;">
         <nav aria-label="Page navigation example">
           <ul class="pagination" class="center">
             <% if (current_page == 1) { %>
@@ -169,6 +169,8 @@
             <% } %> 
             <span aria-hidden="true">&laquo;</span>
             <span class="sr-only">Previous</span>
+            </a>
+            </li>
             </a>
             </li>
             <% for (var i = 1; i <= pages; i++ ) { %>
