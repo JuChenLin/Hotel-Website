@@ -57,19 +57,25 @@
           <div class="col-md-7" data-aos="fade-up" data-aos-delay="100">
               
             <h3> Bookings </h3>
+            <% for (var i = 0; i < result.length; i++) { %>
             <div class="col-md-11 col-lg-11" data-aos="fade-up" id="order">
-                <p>"Stay Date"</p>
-                <p>"Room Name"</p>
-                <p>"Titlal Price"</p>                        
+                <img src="<%= result[i]['img_address'] %>" alt="image of room" class="img-fluid mb-3">
+                <h2><%= result[i]['room_name'].toUpperCase() %></h2>
+                <p>Check-in Date: <%= result[i]['checkin_date'].toDateString() %> </p>
+                <p>Check-out Date: <%= result[i]['checkout_date'].toDateString() %> </p>
+                <p>Adult: <%= result[i]['adults'] %></p>  
+                <p>Children: <%= result[i]['children'] %></p>  
+                <p>Email: <%= result[i]['email'] %></p>  
+                <p>Note: <%= result[i]['message'] %></p> 
             </div>
+            <br>
+            <% } %>   
           </div>
           <div class="col-md-5" data-aos="fade-up" data-aos-delay="200">
             <div class="row">
               <div class="col-md-10 ml-auto information">
                 <p><spam class="d-block"> Username </p>
-                <p><spam> "Username"</spam></p>
-                <p><spam class="d-block">Address:</spam></p> 
-                <p><spam> "Addresss"</spam></p>
+                <p><spam> <%= username %></spam></p>
               </div>
             </div>
           </div>
@@ -168,7 +174,7 @@
               <h2 class="text-white font-weight-bold">A Best Place To Stay. Reserve Now!</h2>
             </div>
             <div class="col-12 col-md-6 text-center text-md-right" data-aos="fade-up" data-aos-delay="200">
-              <a href="reservation.html" class="btn btn-outline-white-primary py-3 text-white px-5">Reserve Now</a>
+              <a href="/result" class="btn btn-outline-white-primary py-3 text-white px-5">Reserve Now</a>
             </div>
           </div>
         </div>

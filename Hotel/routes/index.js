@@ -61,6 +61,7 @@ router.get('/', function(req, res) {
 
 router.get('/index', function(req, res){
     var username = false;
+    var userrole = false;
     if (req.user) {
         username = req.user.username;
     }
@@ -151,7 +152,9 @@ router.post('/reservation', function(req, res){
 
     var rsd = req.body.reservation_date;
     var rsd_split = rsd.split('/');
+    console.log(rsd);
     var reservation_date = new Date(rsd_split[0], rsd_split[1], rsd_split[2]);
+    console.log(reservation_date);
     var adults = req.body.adults;
     var children = req.body.children;
     var room_id = req.body.room_id;
@@ -161,6 +164,8 @@ router.post('/reservation', function(req, res){
     var username = req.body.username;
     var room_id = req.body.room_id;
     var price = req.body.price;
+    var room_name = req.body.room_name;
+    var img_address = req.body.img_address;
 
 
     var collection = db.get('reservations');
@@ -174,7 +179,10 @@ router.post('/reservation', function(req, res){
         room_id: room_id,
         email: email,
         price: price,
-        message: message
+        message: message,
+        username: username,
+        room_name: room_name,
+        img_address: img_address
     }, function(err, video) {
         if (err) throw err;
         res.redirect('/');
@@ -359,12 +367,29 @@ router.post('/rooms', async function(req, res){
     var result = await search_available_rooms(checkin_date, checkout_date, adults, children);
     res.json(result);
 });
-
-router.get('/member', function(req, res){
+// now
+router.get('/member', async function(req, res){
     var username = false;
     if (req.user) username = req.user.username;
+    console.log("----------------------------" + username + "----------------------------");
     console.log(username);
-    res.render('member', { username : username });
+
+    var collection = db.get('reservations');
+    var query = {
+        username: username
+    };
+    
+    collection.find( query , function(err, result){
+        if (err) throw err;
+        user = result;     
+        console.log('-------------------------------------result-------------------------------------');     
+        console.log(result);
+
+
+
+        res.render('member', { username : username, result : result});
+    });
+
 });
 
 

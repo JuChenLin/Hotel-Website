@@ -57,6 +57,8 @@
             <h2 id="room_name"></h2>
             <p id="feature"></p>
             <form action="/reservation" method="post" class="bg-white p-md-5 p-4 mb-5 border">
+              <input type="text" id="img_address" name="img_address" class="form-control" value="" required>
+              <input type="text" id="room_name" name="room_name" class="form-control" value="" required>
               <input type="text" id="hotel_id" name="hotel_id" class="form-control" value="" required>
               <input type="text" id="room_id" name="room_id" class="form-control" value="" required>
               <input type="text" id="reservation_date" name="reservation_date" class="form-control" value='' required>
@@ -185,7 +187,10 @@
         $("#photo").attr('src', pAddress).attr('alt', 'photo of ' + name);
         $("#feature").text(feature);
 
+
         // form
+        $("#img_address").val(pAddress).hide();
+        $("#room_name").val(name).hide();
         $("#hotel_id").val(hotel_id).hide();
         $("#room_id").val(room_id).hide();
         $("#reservation_date").val(today_str).hide();

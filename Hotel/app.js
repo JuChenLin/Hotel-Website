@@ -65,6 +65,6 @@ passport.serializeUser(Customer.serializeUser());
 passport.deserializeUser(Customer.deserializeUser());
 
 // mongoose
-mongoose.connect('mongodb://localhost:27017/passport_local_mongoose');
+mongoose.connect('mongodb://localhost:27017/hotel');
 
 module.exports = app;
