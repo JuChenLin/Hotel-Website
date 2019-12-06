@@ -14,6 +14,8 @@ var indexRouter = require('./routes/index');
 
 var session = require('express-session');
 
+var paginate = require('express-paginate');
+
 var app = express();
 
 // view engine setup
@@ -25,8 +27,10 @@ app.use(express.json());
 app.use(express.urlencoded({ extended: false }));
 app.use(cookieParser());
 app.use(express.static(path.join(__dirname, 'public')));
+app.use(paginate.middleware(10, 50));
 app.use('/room/:roomid', express.static(path.join(__dirname, 'public')));
 app.use('/edit/:roomid', express.static(path.join(__dirname, 'public')));
+app.use('/rooms/:page', express.static(path.join(__dirname, 'public')));
 app.use('/result', express.static(path.join(__dirname, 'public')));
 
 //app.use(express.session());

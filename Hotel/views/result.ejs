@@ -175,8 +175,8 @@
         <br/>
 
         <div style="text-align:center;" id="pagination">
-          <div class="pagination" id="page_start">
-            <a href="/result/1">&laquo;</a>
+          <div class="pagination">
+            <a href="/result/1" id="page_start">&laquo;</a>
             <a href="#" id="page_end">&raquo;</a>
           </div>
         </div>
@@ -221,22 +221,30 @@
           var room_with_detail = data["room_with_detail"];
           console.log(room_with_detail);
           $('.room-for-book').remove();
-          var dic = {}
-          var count = 0;
+          var dic_all = {};
+          var dic = {};
+          var count_available = 0;
+          var count_all = 0;
           var page = '';
           var page_count = 0;
+          var isHide = false;
 
           for (var i in aval_room) {
             id = aval_room[i];
             dic[id] = true;
-            count += 1;
-            page_count = Math.ceil(count/9);
-            if (count%9 == 1) { 
-              page += '<a href="/result/' + page_count + '">' + page_count +'</a>'; 
-            }
+            count_available += 1;
           }
 
-          var isHide = false;
+          // for (var i in room_with_detail) {
+          //   count_all += 1;
+          //   page_count = Math.ceil((count_all)/9);
+          //   page_left = count_all%9;
+          //   console.log("count", count_all, "page_count", page_count, "page_left", page_left);
+          //   if (page_left == 1) { 
+          //     page += '<a href="/result/' + page_count + '">' + page_count +'</a>'; 
+          //   }
+          // }
+
           for (var id in room_with_detail) {
             if (!isHide) $('#no_res').hide();
             var room = room_with_detail[id];
@@ -252,6 +260,9 @@
             var adults = $('#adults').children("option:selected").val();
             var children = $('#children').children("option:selected").val();
             // console.log(id);
+
+            var count += 1;
+            
             if (!(id in dic)) {
               console.log('in');
               but_color = 'secondary';
@@ -298,11 +309,19 @@
                         '</div>' + 
                       '</div>';
 
-            $('#res_sum').text(count + ' avaliable rooms are found ...');
+            $('#res_sum').text(count_available + ' avaliable rooms are found ...');
             $('#aval_rooms').append(entry);
-            // $('#page_start').append(page);
-            $("#page_end").attr("src","/results/page_count");
           }
+
+          // page_count = Math.ceil((count_all)/9);
+          //   page_left = count_all%9;
+          //   console.log("count", count_all, "page_count", page_count, "page_left", page_left);
+          //   if (page_left == 1) { 
+          //     page += '<a href="/result/' + page_count + '">' + page_count +'</a>'; 
+          //   }
+            
+          // $('#page_start').after(page);
+          // $("#page_end").attr("src","/results/page_count");
         }
 
         function getResult() {

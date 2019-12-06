@@ -28,6 +28,9 @@ var Customer = require('../models/customers');
 var formidable = require('formidable');
 var path = require('path');
 
+var app = express();
+
+
 const month_int = {
     "January" : 0, 
     "February" : 1, 
@@ -42,8 +45,6 @@ const month_int = {
     "November" : 10, 
     "December" : 11
 };
-
-
 
 router.use(bodyParser.urlencoded({ extended: false }));
 router.use(methodOverride(function(req, res){
@@ -116,6 +117,45 @@ router.get('/result', async function(req, res) {
                         children :  children});
 });
 
+//Pagination
+// router.get('/result', async function(req, res) {
+//     var username = false;
+//     var userrole = false;
+//     if (req.user) username = req.user.username;
+//     if (req.user) userrole = req.user.role;
+//     var checkin_date;
+//     var checkout_date;
+//     var adults;
+//     var children;
+
+//     var page = req.query.page;
+//     var limit = req.query.limit;
+//     var rooms_count = result.length;
+//     var pageCount = Math.ceil()
+    
+//     var queryProvided = false;
+//     if (Object.keys(req.query).length != 0) {
+//         queryProvided = true;
+//         checkin_date = req.query.checkin_date;
+//         checkout_date = req.query.checkout_date;
+//         adults = req.query.adults;
+//         children = req.query.children
+//     }
+
+//     var startIndex = (page - 1) *limit;
+//     var endIndex = page *limit;
+//     var pageResult = result.slice(startIndex, endIndex);
+    
+//     res.render('result', { username : username, 
+//                         userrole : userrole, 
+//                         queryProvided : queryProvided,
+//                         checkin_date : checkin_date,
+//                         checkout_date : checkout_date,
+//                         adults : adults,
+//                         children :  children});
+// });
+
+
 router.post('/login', passport.authenticate('local'), function(req, res) {
     res.redirect('/');
 });
@@ -128,7 +168,7 @@ router.get('/logout', function(req, res) {
 router.get('/reservation', function(req, res){
     var username = false;
     if (req.user) username = req.user.username;
-    
+    if (req.user) name = req.user.name;
     res.render('reservation', {username: username});
 });
 
@@ -138,15 +178,55 @@ router.post('/reservation', function(req, res){
     res.render('reservation', {username: username});
 });
 
-router.get('/rooms', async function(req, res){
+router.get('/rooms/:page', async function(req, res){
     var username = false;
     var userrole = false;
     if (req.user) username = req.user.username;
     if (req.user) userrole = req.user.role;
     //console.log(username);
-    var rooms = await list_room();
-    res.render('rooms', { username : username, userrole : userrole, rooms: rooms });
+    const resPerPage = 9; // results per page
+    const page = req.params.page || 1; // Page
+
+    if (page) {
+        // Declaring query based/search variables
+        // const searchQuery = req.query.search,
+        // regex = new RegExp(escapeRegex(req.query.search), 'gi');
+        // Find Demanded Products - Skipping page values, limit results
+        var rooms = await list_room();
+        var page_rooms;
+        if((page * resPerPage) >= rooms.length )
+            page_rooms = rooms.slice((page-1)* resPerPage, rooms.length);
+        else
+            page_rooms = rooms.slice((page-1)* resPerPage, page * resPerPage);
+        // Count how many productsskip were found
+        //const rooms_num = rooms.length;
+        // Renders The Page
+
+        console.log(Math.ceil(rooms.length / resPerPage));
+        //console.log(total_rooms / resPerPage);
+        //console.log(Math.ceil(total_rooms/ resPerPage));
+        //console.log(page);
+        //console.log(rooms_num);
+        res.render('rooms', { username : username, 
+                            userrole : userrole, 
+                            rooms: page_rooms,  
+                            current_page: page,
+                            pages: Math.ceil(rooms.length / resPerPage), 
+                            });
+    }
 });
+
+router.get('/shop/:page', async (req, res, next) => {
+    // Declaring variable
+    
+    try {
+        
+} catch (err) {
+  throw new Error(err);
+}
+});
+// Exporting Shop Router
+module.exports = router;
 
 router.get('/room', function(req, res) {
     var username = false;
@@ -337,7 +417,17 @@ router.post('/rooms', async function(req, res){
     out_split[1] = out_split[1].substring(0, out_split[1].length - 1);
     var checkin_date = new Date(parseInt(in_split[2]), month_int[in_split[1]], parseInt(in_split[0]));
     var checkout_date = new Date(parseInt(out_split[2]), month_int[out_split[1]], parseInt(out_split[0]));
+
+    // console.log(checkin_date);
+    // console.log(checkout_date);
+    // console.log(adults);
+    // console.log(children);
+    // var checkin_date = new Date(2019, 9, 10);
+    // var checkout_date = new Date(2019, 9, 14);
+    // var adults = req.body.adults;
+    // var children = req.body.children;
     var result = await search_available_rooms(checkin_date, checkout_date, adults, children);
+    // console.log(util.inspect(result, false, null, true ));
     res.json(result);
 });
 
@@ -1012,7 +1102,7 @@ async function search_available_rooms(checkin_date, checkout_date, adults, child
         objs[room['id']] = e;
     }
     // console.log(aval_rooms);
-    //console.log(room_with_detail);
+    // console.log(room_with_detail);
     // console.log("OBJS: \n");
     // console.log(objs);
     // console.log(aval_rooms);
@@ -1022,7 +1112,7 @@ async function search_available_rooms(checkin_date, checkout_date, adults, child
         'aval_room' : aval_rooms, 
         'room_with_detail' : objs
     };
-     console.log(room_info);
+    // console.log(room_info);
     return room_info;
 }
 
