@@ -47,11 +47,10 @@
 
     <section class="section bg-light pb-0"  >
       <div class="container">
-       
         <div class="row check-availabilty" id="next">
           <div class="block-32" data-aos="fade-up" data-aos-offset="-200">
 
-            <form action="/result" method="GET">
+            <form id="searchform" action="/result" method="GET">
               <div class="row">
                 <div class="col-md-6 mb-3 mb-lg-0 col-lg-3">
                   <label for="checkin_date" class="font-weight-bold text-black">Check In</label>
@@ -316,6 +315,27 @@
           </div>
         </div>
       </section>
+      
+      
+      <div class="modal fade" id="invalidsearchModal" tabindex="-1" role="dialog" aria-labelledby="invalidsearchModalLabel" aria-hidden="true">
+        <div class="modal-dialog" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="delModalLabel">Invalid search</h5>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <div class="modal-body">
+                    Please search a valid date
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
 
     <%- include partials/footer.ejs %>   
     
@@ -334,8 +354,41 @@
     <script src="js/jquery.timepicker.min.js"></script> 
 
     <script type="text/javascript">
-      $('#checkin_date').val("1 December, 2019");
-      $('#checkout_date').val("5 December, 2019");
+      //$('#checkin_date').val("1 December, 2019");
+      //$('#checkout_date').val("5 December, 2019");
+        function checkdate(){
+          var months = {"January": "00", "February": "01", "March": "02", "April": "03", "May": "04", "June": "05", "July": "06", "August": "07", "September": "08", "October": "09", "November": "10", "December": "11" }
+          var checkin_date = $('#checkin_date').val();
+          var date_str = checkin_date.split(' ');
+          var day = date_str[0];
+          var month = months[date_str[1].replace(",", "")];
+          var year = date_str[2];
+          var checkinDate = new Date(year, month, day);
+
+          var checkout_date = $('#checkout_date').val();
+          var date_str = checkout_date.split(' ');
+          var day = date_str[0];
+          var month = months[date_str[1].replace(",", "")];
+          var year = date_str[2];
+          var checkoutDate = new Date(year, month, day);
+
+          var todayDate = new Date();
+
+          if ((checkoutDate > checkinDate) && (checkoutDate > todayDate) && (checkinDate > todayDate)) {
+              return true
+          }
+          $('#invalidsearchModal').modal('show');
+          return false;
+      }
+    $( document ).ready(function() { 
+        $('#searchform').submit(function(e) {
+            e.preventDefault(); // avoid to execute the actual submit of the form.
+            //Eric
+            if (checkdate()) {
+                this.submit();
+            }
+        });
+    });
     </script>
 
     <script src="js/main.js"></script>
