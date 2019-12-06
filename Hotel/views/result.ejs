@@ -8,7 +8,7 @@
     <meta name="description" content="" />
     <meta name="keywords" content="" />
     <meta name="author" content="" />
-    <!-- <link rel="stylesheet" type="text/css" href="//fonts.googleapis.com/css?family=|Roboto+Sans:400,700|Playfair+Display:400,700"> -->
+    <link rel="stylesheet" type="text/css" href="//fonts.googleapis.com/css?family=|Roboto+Sans:400,700|Playfair+Display:400,700">
 
     <link rel="stylesheet" href="css/bootstrap.min.css">
     <link rel="stylesheet" href="css/animate.css">
@@ -132,7 +132,7 @@
                 <div class="field-icon-wrap">
                       <div class="icon"><span class="ion-ios-arrow-down"></span></div>
                       <select name="bed_number" id="children" class="form-control">
-                        <option value="">Bed Type</option>
+                        <option value="">Bed Number</option>
                         <option value="2">1</option>
                         <option value="2">2</option>
                         <option value="3">3</option>
@@ -151,6 +151,14 @@
 <!--           </div> -->
         </div>
         <br/>
+
+        <!-- --------Temp -->
+        <div class="form-wrapper" style="text-align:center;" data-aos="fade-up">
+          <button id="all" class="btn btn-primary btn-block text-white" disabled="">Show All Rooms</button>
+          <button id="only" class="btn btn-primary btn-block text-white">Show Only Available</button>
+        </div>
+        <br/>
+        <!-- ---------- -->
 
         <div id="ind_no_result" class="" data-aos="fade-up">
           <div class="form-wrapper" style="text-align:center;" data-aos="fade-up">
@@ -222,8 +230,8 @@
             id = aval_room[i];
             dic[id] = true;
             count += 1;
-            page_count = count/9;
-            if (count%9 ==1) { 
+            page_count = Math.ceil(count/9);
+            if (count%9 == 1) { 
               page += '<a href="/result/' + page_count + '">' + page_count +'</a>'; 
             }
           }
@@ -250,11 +258,11 @@
               but_dis = 'disabled';
               but_name = 'Sold Out!';
               add_class = 'not_available';
-              //if ($("#only").is(":disabled")) {   
+              if ($("#only").is(":disabled")) {   
               //--Prsiscilla
-              if ($("#available").is(":active")) {
-                // if only disabled, all select
+              //if ($("#available").is(":active")) {
                 // if #avalable active, all select
+                // if only disabled, all select
                 isHide = 'hidden';
               }
             }
@@ -292,7 +300,7 @@
 
             $('#res_sum').text(count + ' avaliable rooms are found ...');
             $('#aval_rooms').append(entry);
-            $('#page_start').append(page);
+            // $('#page_start').append(page);
             $("#page_end").attr("src","/results/page_count");
           }
         }
@@ -324,23 +332,34 @@
           });
         }
         
-        // $('#all').on("click", function() {
-        //   $("#only").removeAttr('disabled');
-        //   $(this).prop('disabled',true);
-        //   $('.not_available').show();
-        // });
+        $('#all').on("click", function() {
+          $("#only").removeAttr('disabled');
+          $(this).prop('disabled',true);
+          $('.not_available').show();
+        });
 
-        // $('#only').on("click", function() {
-        //   $("#all").removeAttr('disabled');
-        //   $(this).prop('disabled',true);
-        //   $('.not_available').hide();
-        // });
+        $('#only').on("click", function() {
+          $("#all").removeAttr('disabled');
+          $(this).prop('disabled',true);
+          $('.not_available').hide();
+        });
 
         //Priscilla 
-        $('#avaliable').on("click", function() {
-          // $(this).toggleClass('active');
-          if ($(this).prop("active")) $('.not_available').hide();
-        });
+        // $('#available').click(function(){
+        //   $(this).toggleClass("active");
+        //   var act = $(this).prop("active");
+        //   console.log('active?');
+        //   console.log(act);
+        //   if(!) {
+        //     $('.not_available').hide();
+        //   }
+        // });
+        // $('#available').on("click", function() {
+        //   $(this).toggleClass('active');
+        //   if ($(this).prop("active")) {
+          // $('.not_available').hide();
+        // }
+        // });
 
 
         $('#searchform').submit(function(e) {
@@ -361,8 +380,6 @@
         });
       });
     </script>
-
-    
 
     <script src="js/main.js"></script>
   </body>
