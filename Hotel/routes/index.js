@@ -1012,7 +1012,7 @@ async function search_available_rooms(checkin_date, checkout_date, adults, child
         objs[room['id']] = e;
     }
     // console.log(aval_rooms);
-    // console.log(room_with_detail);
+    //console.log(room_with_detail);
     // console.log("OBJS: \n");
     // console.log(objs);
     // console.log(aval_rooms);
@@ -1022,7 +1022,7 @@ async function search_available_rooms(checkin_date, checkout_date, adults, child
         'aval_room' : aval_rooms, 
         'room_with_detail' : objs
     };
-    // console.log(room_info);
+     console.log(room_info);
     return room_info;
 }
 

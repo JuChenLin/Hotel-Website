@@ -27,6 +27,7 @@ app.use(cookieParser());
 app.use(express.static(path.join(__dirname, 'public')));
 app.use('/room/:roomid', express.static(path.join(__dirname, 'public')));
 app.use('/edit/:roomid', express.static(path.join(__dirname, 'public')));
+app.use('/result', express.static(path.join(__dirname, 'public')));
 
 //app.use(express.session());
 app.use(session({ 
